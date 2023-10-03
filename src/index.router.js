@@ -23,7 +23,7 @@ const initApp = (app, express) => {
     app.use(`/chat`, chatRouter)
 
     app.use('*', (req, res, next) => {
-        res.send("In-valid Routing Plz check url  or  method")
+        res.send("In-valid Routing Please check url  or  method")
     })
     app.use(globalErrorHandling)
 
