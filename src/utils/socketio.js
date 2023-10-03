@@ -1,5 +1,5 @@
 // import { Server } from "socket.io"
-import { Server } from "socket.io";
+import { Server } from "socket.io/dist/index.js";
 
 
 let io 
