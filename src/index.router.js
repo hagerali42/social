@@ -22,7 +22,7 @@ const initApp = (app, express) => {
     app.use(`/ReplayComment`, ReplaycommentRouter)
     app.use(`/chat`, chatRouter)
 
-    app.all('*', (req, res, next) => {
+    app.use('*', (req, res, next) => {
         res.send("In-valid Routing Plz check url  or  method")
     })
     app.use(globalErrorHandling)
