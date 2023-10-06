@@ -11,14 +11,17 @@ import { authSoket } from './src/middleware/auth.js'
 import cors from 'cors'
 import userModel from './DB/model/User.model.js'
 const app = express()
+app.use(cors())
+
 // setup port and the baseUrl
 const port = process.env.PORT || 5000
-initApp(app ,express)
 app.get('/', (req, res) =>{
-    res.json({message:'welcome '})
+  res.json({message:'welcome '})
 })
 
-app.use(cors())
+initApp(app ,express)
+
+
 
 // //sociect io
 const server =app.listen(port, () => console.log(`Example app listening on port ${port}!`))
