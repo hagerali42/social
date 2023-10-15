@@ -11,8 +11,14 @@ import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
 const app = express();
-app.use(cors());
-
+app.use(
+  cors({
+    origin: ["*","http://localhost:3001"],
+    headers: ["Content-Type"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
 
 // setup port and the baseUrl
 const port = process.env.PORT || 5000;
