@@ -11,32 +11,8 @@ import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
 const app = express();
+app.use(cors());
 
-const corsOptions = {
-  origin: ["http://localhost:3000","*"],
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
-
-// app.use(
-//   cors({
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
-
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "OPTIONS,GET,POST,PUT,PATCH,DELETE"
-//   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
 
 // setup port and the baseUrl
 const port = process.env.PORT || 5000;
@@ -51,6 +27,7 @@ let activeUsers = [];
 const server = app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );
+
 const io = initIo(server);
 io.on("connection", (socket) => {
   //save socket id      // add new User

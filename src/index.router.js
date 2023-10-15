@@ -5,13 +5,14 @@ import postRouter from './modules/post/post.router.js'
 import commentRouter from './modules/comment/comment.router.js'
 import ReplaycommentRouter from './modules/ReplayComment/replay.router.js'
 import chatRouter from './modules/chat/chat.router.js'
-
+import cors from 'cors'
 
 import { globalErrorHandling } from './utils/errorHandling.js'
 
 
 
 const initApp = (app, express) => {
+    app.use(cors());
     //convert Buffer Data
     app.use(express.json({}))
     //Setup API Routing 
