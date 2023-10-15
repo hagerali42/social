@@ -1,4 +1,3 @@
-import { string } from "joi";
 import { Schema, Types, model } from "mongoose";
 
 const userSchema = new Schema(
@@ -16,7 +15,7 @@ const userSchema = new Schema(
     coverImage: { type: Object },
     image: {
       type: String,
-      required: true,
+      required: false,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     }, //profile pic
