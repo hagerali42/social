@@ -17,6 +17,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://localhost:3001",
   "https://social-qftn.onrender.com",
+  "*"
 ];
 
 app.use(
