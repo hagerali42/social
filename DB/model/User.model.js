@@ -13,13 +13,16 @@ const userSchema = new Schema(
     age: { type: Number },
     gender: { type: String, defulte: "male", enum: ["male", "female"] },
     coverImage: { type: Object },
+    //profile pic
     image: {
-      type: { type: Object },
+      type: Object,
       required: false,
       default: {
-        type: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+        type: "secure_url",
+        value:
+          "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
       },
-    }, //profile pic
+    },
     isAdmin: {
       type: Boolean,
       required: true,
