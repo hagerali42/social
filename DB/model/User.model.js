@@ -18,7 +18,7 @@ const userSchema = new Schema(
       type: Object,
       required: false,
       default: {
-        type: "secure_url",
+        public_id: "secure_url",
         secure_url:
           "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
       },
