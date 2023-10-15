@@ -11,13 +11,23 @@ import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
 const app = express();
-app.use(cors());
+
 app.use(
   cors({
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
-)
+);
+
+// app.use(cors());
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//   })
+// )
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
