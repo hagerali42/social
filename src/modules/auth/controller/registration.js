@@ -31,13 +31,13 @@ export const signup = async (req, res, next) => {
   req.body.phone = CryptoJS.AES.encrypt( req.body.phone, process.env.TOKEN_SIGNATURE).toString();
 
   //image
-  if(req.files.image){
+  if(req.files?.image){
     const {secure_url,public_id}=await cloudinary.uploader.upload(
       req.files.image[0].path,{folder:'social/user/profile'})
     req.body.image = {secure_url,public_id}
   }
 
-  if (req.files.coverImage) {
+  if (req.files?.coverImage) {
     const { secure_url, public_id } = await cloudinary.uploader.upload(
       req.files.coverImage[0].path,{folder:'social/user/cover'});
     req.body.coverImage = { secure_url, public_id };
