@@ -20,14 +20,6 @@ app.use(
   })
 );
 
-// app.use(cors());
-// app.use(
-//   cors({
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//   })
-// )
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
