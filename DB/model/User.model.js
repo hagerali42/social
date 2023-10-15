@@ -14,10 +14,11 @@ const userSchema = new Schema(
     gender: { type: String, defulte: "male", enum: ["male", "female"] },
     coverImage: { type: Object },
     image: {
-      type: String,
+      type: { type: Object },
       required: false,
-      default:
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+      default: {
+        type: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+      },
     }, //profile pic
     isAdmin: {
       type: Boolean,

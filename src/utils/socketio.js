@@ -14,7 +14,7 @@ let io
 export const initIo =(server)=>{
 
     io =new Server(server,{
-        cors:"*"
+        cors: "*"
     })
     return io
 }
