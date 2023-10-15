@@ -10,8 +10,8 @@ import { initIo } from "./src/utils/socketio.js";
 import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
+const port = process.env.PORT || 5000;
 const app = express();
-
 const allowedOrigins = [
   "http://localhost:3000",
   "https://localhost:3000",
@@ -30,7 +30,6 @@ app.use(
   })
 );
 // setup port and the baseUrl
-const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
   res.json({ message: "welcome " });
 });
