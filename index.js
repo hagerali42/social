@@ -11,22 +11,18 @@ import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
 const app = express();
-  const allowedOrigins = [
-    "http://localhost:3000",
-    "https://localhost:3000",
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://localhost:3000",
+  "http://localhost:3001",
+  "https://localhost:3001",
+  "https://social-qftn.onrender.com",
+];
 
-    "http://localhost:3001",
-    "https://localhost:3001",
-    "https://social-qftn.onrender.com",
-  ];
-
-// Configure CORS middleware
-// Configure// Configure CORS middleware
-// Configure CORS middleware
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: '*', // Add other methods if needed
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify the methods you want to allow
     credentials: true,
     optionsSuccessStatus: 204, // Handle preflight requests
   })
