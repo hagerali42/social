@@ -11,15 +11,26 @@ import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
 import userModel from "./DB/model/User.model.js";
 const app = express();
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "https://localhost:3000",
+
+    "http://localhost:3001",
+    "https://localhost:3001",
+    "https://social-qftn.onrender.com",
+  ];
+
+// Configure CORS middleware
+// Configure// Configure CORS middleware
+// Configure CORS middleware
 app.use(
   cors({
-    origin: ["*","http://localhost:3001"],
-    headers: ["Content-Type"],
+    origin: allowedOrigins,
+    methods: '*', // Add other methods if needed
     credentials: true,
+    optionsSuccessStatus: 204, // Handle preflight requests
   })
 );
-app.options("*", cors());
-
 // setup port and the baseUrl
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
