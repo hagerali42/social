@@ -19,6 +19,7 @@ const allowedOrigins = [
   "https://localhost:3001",
   "https://social-qftn.onrender.com",
 ];
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
