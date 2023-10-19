@@ -97,5 +97,75 @@ export const createGroupChat = async (req, res, next) => {
     return next(new ErrorClass(`${error.message}`, 400));
 
   }
+};  
+//rename  group 
+export const renameGroup =async (req, res,next) => {
+  const { chatId, chatName } = req.body;
+  const updatedChat = await chatModel.findByIdAndUpdate(
+    chatId,
+    {
+      chatName: chatName,
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updatedChat) {
+      return next(new ErrorClass("Chat Not Found", 404));
+  } else {
+    return res.status(200).json(updatedChat);
+  }
 };
 
+
+export const removeFromGroup = async (req, res,next) => {
+  const { chatId, userId } = req.body;
+
+  // check if the requester is admin
+
+  const removed = await chatModel.findByIdAndUpdate(
+    chatId,
+    {
+      $pull: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!removed) {
+    return next(new ErrorClass("Chat Not Found", 404));
+
+  } else {
+   return res.json(removed);
+  }
+}
+
+export const addToGroup = async (req, res,next) => {
+  const { chatId, userId } = req.body;
+
+  // check if the requester is admin
+
+  const added = await chatModel.findByIdAndUpdate(
+    chatId,
+    {
+      $push: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!added) {
+      return next(new ErrorClass("Chat Not Found", 404));
+  } else {
+     return res.json(added);
+  }
+}

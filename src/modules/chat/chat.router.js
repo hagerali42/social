@@ -22,33 +22,23 @@ router.route("/group")
     );
    
 
-// router.route("/rename")
-//     .put(
-//         auth,
-//        asyncHandler( chatController.renameGroup)
-//     );
+router.route("/rename")
+    .put(
+        auth,
+       asyncHandler( chatController.renameGroup)
+    );
 
-// router.route("/groupremove")
-//     .put(
-//         auth,
-//         asyncHandler(chatController.removeFromGroup)
-//     );
-// router.route("/groupadd")
-//     .put(
-//         auth,
-//         asyncHandler(chatController.addToGroup)
-//     );
+router.route("/groupremove")
+    .put(
+        auth,
+        asyncHandler(chatController.removeFromGroup)
+    );
+router.route("/groupadd")
+    .put(
+        auth,
+        asyncHandler(chatController.addToGroup)
+    );
 
-// router.post('/',
-// auth,
-// asyncHandler(chatController.sendMessage)
-// )
-
-
-// router.get('/ovo/:destId',
-// auth,
-// asyncHandler(chatController.getChat)
-// )
 
 
 
