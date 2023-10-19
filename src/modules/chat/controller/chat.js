@@ -87,17 +87,18 @@ export const createGroupChat = async (req, res, next) => {
         isGroupChat: true,
         groupAdmin: req.user,
       });
-
+      await userModel.findByIdAndUpdate(req.user._id, { isAdmin :true});
       const fullGroupChat = await chatModel  
         .findOne({ _id: groupChat._id })
         .populate("users", "-password")
         .populate("groupAdmin", "-password");
-      return res.status(200).json(fullGroupChat);
+      return res.status(200).json({message:"Done",fullGroupChat});
   } catch (error) {
     return next(new ErrorClass(`${error.message}`, 400));
 
   }
 };  
+
 //rename  group 
 export const renameGroup =async (req, res,next) => {
   const { chatId, chatName } = req.body;
@@ -116,15 +117,18 @@ export const renameGroup =async (req, res,next) => {
   if (!updatedChat) {
       return next(new ErrorClass("Chat Not Found", 404));
   } else {
-    return res.status(200).json(updatedChat);
+    return res.status(200).json({message:"Done",updatedChat});
   }
 };
 
-
+//admin remove user to the group
 export const removeFromGroup = async (req, res,next) => {
   const { chatId, userId } = req.body;
-
   // check if the requester is admin
+  const admin = await chatModel.findOne({ groupAdmin: req.user._id });
+  if (!admin) {
+    return next(new ErrorClass("You are not authorized to make this action", 404));
+  }
 
   const removed = await chatModel.findByIdAndUpdate(
     chatId,
@@ -142,15 +146,20 @@ export const removeFromGroup = async (req, res,next) => {
     return next(new ErrorClass("Chat Not Found", 404));
 
   } else {
-   return res.json(removed);
+   return res.json({message:"Done",removed});
   }
 }
-
+//admin add user to the group
 export const addToGroup = async (req, res,next) => {
   const { chatId, userId } = req.body;
 
   // check if the requester is admin
-
+  const admin = await chatModel.findOne({ groupAdmin: req.user._id });
+  if (!admin) {
+    return next(
+      new ErrorClass("You are not authorized to make this action", 404)
+    );
+  }
   const added = await chatModel.findByIdAndUpdate(
     chatId,
     {
@@ -166,6 +175,6 @@ export const addToGroup = async (req, res,next) => {
   if (!added) {
       return next(new ErrorClass("Chat Not Found", 404));
   } else {
-     return res.json(added);
+     return res.json({message:"Done",added});
   }
 }
