@@ -15,11 +15,11 @@ router.route("/")
     );
 
 
-// router.route("/group")
-//     .post(
-//         auth,
-//         asyncHandler(chatController.createGroupChat)
-//     );
+router.route("/group")
+    .post(
+        auth,
+        asyncHandler(chatController.createGroupChat)
+    );
    
 
 // router.route("/rename")

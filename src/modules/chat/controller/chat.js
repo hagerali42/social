@@ -2,7 +2,7 @@ import chatModel from "../../../../DB/model/Chat.model.js";
 import userModel from "../../../../DB/model/User.model.js";
 import { ErrorClass } from "../../../utils/error.Class.js";
 import { getIo } from "../../../utils/socketio.js";
-
+//access chat or create new chat
 export const accessChat = async (req, res, next) => {
   const { userId } = req.body;
   if (!userId) {
@@ -45,9 +45,11 @@ export const accessChat = async (req, res, next) => {
     }
   }
 };
-export const fetchChats = async (req, res) => {
+//get all of chats of this user
+export const fetchChats = async (req, res, next) => {
   try {
-    chatModel.find({ users: { $elemMatch: { $eq: req.user._id } } })
+    chatModel
+      .find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
@@ -57,11 +59,43 @@ export const fetchChats = async (req, res) => {
           path: "latestMessage.sender",
           select: "userName image email",
         });
-       return res.status(200).send(results);
+        return res.status(200).send(results);
       });
   } catch (error) {
     return next(new ErrorClass(`${error.message}`, 400));
   }
 };
+//create group chat
+export const createGroupChat = async (req, res, next) => {
+  //take a user direct and add current user in this arr
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "Please Fill all the feilds" });
+  }
+  let users = JSON.parse(req.body.users); //arr of users
 
+  if (users.length < 2) {
+    return res
+      .status(400)
+      .send("More than 2 users are required to form a group chat");
+  }
+  users.push(req.user);                      //add current user
+  try {
+      const groupChat = await chatModel.create({
+        //create group chat
+        chatName: req.body.name,
+        users: users,
+        isGroupChat: true,
+        groupAdmin: req.user,
+      });
+
+      const fullGroupChat = await chatModel  
+        .findOne({ _id: groupChat._id })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password");
+      return res.status(200).json(fullGroupChat);
+  } catch (error) {
+    return next(new ErrorClass(`${error.message}`, 400));
+
+  }
+};
 
