@@ -6,7 +6,7 @@ import commentRouter from './modules/comment/comment.router.js'
 import ReplaycommentRouter from './modules/ReplayComment/replay.router.js'
 import chatRouter from './modules/chat/chat.router.js'
 
-import { globalErrorHandling } from './utils/errorHandling.js'
+import { globalErrorHandling, notFound } from './utils/errorHandling.js'
 
 
 
@@ -25,7 +25,7 @@ const initApp = (app, express) => {
         res.send("In-valid Routing Please check url  or  method")
     })
     app.use(globalErrorHandling)
-
+    app.use(notFound)
     connectDB()
 
 }

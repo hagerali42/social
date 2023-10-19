@@ -12,3 +12,9 @@ export const asyncHandler = (fn) => {
 export const globalErrorHandling = (error, req, res, next) => {
     return res.status(error.status || 400).json({ msgError: error.message, stack: error.stack })
 }
+
+export const notFound = (req, res, next) => {
+    const error = new ErrorClass(`Not Found - ${req.originalUrl}`);
+    res.status(404);
+    next(error);
+};

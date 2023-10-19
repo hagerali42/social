@@ -11,12 +11,6 @@ import CryptoJS from "crypto-js";
 //- SignUp ( hash password , encrypt phone , send confirmation email )&& - Refresh token
 
 export const signup = async (req, res, next) => {
-  //  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  //  res.setHeader(
-  //    "Access-Control-Allow-Methods",
-  //    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  //  );
-  //  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   const { email } = req.body;
 //1-ckeck email is exisit
   const checkUser = await userModel.findOne({ email });
@@ -362,7 +356,7 @@ const refresh_token =generateToken({
   expiresIn:60*60*24*30
 })
 
-return res.status(StatusCodes.OK).json({message:'Done', token,refresh_token})
+return res.status(StatusCodes.OK).json({message:'Done', token,refresh_token,user})
 
 }
 
