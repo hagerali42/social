@@ -48,10 +48,12 @@ validation(Val.deleteSoft),
 asyncHandler(userController.deleteSoft) )
 
 
-//-get All users
-router.get('/all',
-validation(Val.deleteSoft),
-asyncHandler(userController.getAlluserass) )
+//-get All users with search
+router.get(
+  "/all",
+  validation(Val.getall),
+  asyncHandler(userController.getAlluserass)
+);
 
 
 

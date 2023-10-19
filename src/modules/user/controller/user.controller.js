@@ -214,8 +214,17 @@ export const deleteSoft =async(req, res, next) => {
 
 
 
-  export const getAlluserass = async(req, res, next) => {
-        const users=await userModel.find().populate('posts') ;
+export const getAlluserass = async (req, res, next) => {
+       const keyword = req.query.search ? {
+         $or: [
+           { firstName: { $regex: req.query.search, $options: "i" } },
+           { lastName: { $regex: req.query.search, $options: "i" } },
+           { email: { $regex: req.query.search, $options: "i" } },
+         ]
+       } : {
+         
+       };
+        const users=await userModel.find(keyword).populate('posts') ;
         users.map(user=>{
           return user.phone= CryptoJS.AES.decrypt(user.phone, process.env.TOKEN_SIGNATURE).toString(CryptoJS.enc.Utf8);
         })

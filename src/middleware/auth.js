@@ -18,7 +18,9 @@ export const auth = async (req, res, next) => {
         if (!decoded?.id) {
             return res.json({ message: "In-valid token payload" })
         }
-        const authUser = await userModel.findById(decoded.id)
+        const authUser = await userModel
+          .findById(decoded.id)
+          .select("-password");
         if (!authUser) {
             return res.json({ message: "Not register account" })
         }

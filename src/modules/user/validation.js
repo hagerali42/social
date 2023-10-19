@@ -41,6 +41,13 @@ export const deleteSoft={
     params:joi.object().required().keys({}),
     query: joi.object().required().keys({}), 
 }
+export const getall = {
+  body: joi.object().required().keys({}),
+  params: joi.object().required().keys({}),
+  query: joi.object().required().keys({
+    search:joi.string()
+  }),
+};
 
 
 
