@@ -22,13 +22,10 @@ export const fetchChats = {
 };
 
 export const createGroupChat = {
-  body: joi
-    .object()
-    .required()
-    .keys({
-      name: joi.string().required(),
-      users: joi.array().items(generalFields.id).required(), // Allow an array of strings
-    }),
+  body: joi.object().required().keys({
+    name: joi.string().required(),
+    users: joi.string(), // Allow the "users" field to be a string
+  }),
   params: joi.object().required().keys({}),
   query: joi.object().required().keys({}),
 };
