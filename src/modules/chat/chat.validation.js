@@ -20,14 +20,19 @@ export const fetchChats = {
   params: joi.object().required().keys({}),
   query: joi.object().required().keys({}),
 };
+
 export const createGroupChat = {
-  body: joi.object().required().keys({
-    name: joi.string().required(),
-    users:joi.array()
-  }),
+  body: joi
+    .object()
+    .required()
+    .keys({
+      name: joi.string().required(),
+      users: joi.array().items(generalFields.id).required(), // Allow an array of strings
+    }),
   params: joi.object().required().keys({}),
   query: joi.object().required().keys({}),
 };
+
 
 export const updateRoomName = {
   body: joi.object().required().keys({
