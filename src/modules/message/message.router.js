@@ -10,7 +10,7 @@ router.route("/")
   .post(
     auth,
     validation(Val.sendMessage),
-    asyncHandler(MsgController)
+    asyncHandler(MsgController.sendMessage)
 );
   
 
