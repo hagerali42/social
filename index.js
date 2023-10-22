@@ -7,9 +7,9 @@ dotenv.config({ path: path.join(__dirname, "./config/.env") });
 import express from "express";
 import initApp from "./src/index.router.js";
 import { initIo } from "./src/utils/socketio.js";
-import { authSoket } from "./src/middleware/auth.js";
+// import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
-import userModel from "./DB/model/User.model.js";
+// import userModel from "./DB/model/User.model.js";
 const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
@@ -52,30 +52,7 @@ io.on("connection", (socket) => {
   //   // send all active users to new user
   //   io.emit("get-users", activeUsers);
   // });
-  console.log("connected");
-  
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-    delete activeUsers[socket.id];
-    io.emit("get-users", activeUsers);
-  });
-  // send message to a specific user
-  socket.on("send-message", (data) => {
-    console.log('data',data,'socket')
-    let receiverID = null;
-    if(!receiverID){
-      console.log('no reciver');
-      return false
-    }
-    console.log('reciever',receiverID,"sender",data['user_id'])
-    if(data["type"] == 'text'){
-      io.to(receiverID).emit("getMessage", data);
-      }else{
-        io.to(receiverID).emit("getMessageImage", data);
-
-    }
-
-  })
+  console.log("connected socket");
 
 
 });
