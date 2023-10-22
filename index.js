@@ -9,7 +9,7 @@ import initApp from "./src/index.router.js";
 import { initIo } from "./src/utils/socketio.js";
 // import { authSoket } from "./src/middleware/auth.js";
 import cors from "cors";
-// import userModel from "./DB/model/User.model.js";
+import userModel from "./DB/model/User.model.js";
 const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
@@ -53,38 +53,43 @@ io.on("connection", (socket) => {
   //   io.emit("get-users", activeUsers);
   // });
   console.log("connected socket");
+  socket.on("setup", async (userData) => {
+  // await userModel.findByIdAndUpdate(userData._id, { socketId: socket.id });
+    socket.join(userData._id);
+    socket.emit("connected");
+  });
+// to join group chat
+  socket.on("join chat",  (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+
+  });
 
 
+socket.on('typing', (room) => {
+  socket.in(room).emit("typing")
+})
+socket.on("stop typing", (room) => {
+  socket.in(room).emit("stop typing");
+});
+//to send new message 
+  socket.on("new message", (newMessageRecieved) => {
+    var chat = newMessageRecieved.chat;
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
+    });
+  });
+
+ socket.off("setup", () => {
+   console.log("USER DISCONNECTED");
+   socket.leave(userData._id);
+ });
 });
 
-// io.on("connection", (socket) => {
-//   // add new User
-//   socket.on("new-user-add", (newUserId) => {
-//     // if user is not added previously
-//     if (!activeUsers.some((user) => user.userId === newUserId)) {
-//       activeUsers.push({ userId: newUserId, socketId: socket.id });
-//       console.log("New User Connected", activeUsers);
-//     }
-//     // send all active users to new user
-//     io.emit("get-users", activeUsers);
-//   });
 
-//   socket.on("disconnect", () => {
-//     // remove user from active users
-//     activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
-//     console.log("User Disconnected", activeUsers);
-//     // send all active users to all users
-//     io.emit("get-users", activeUsers);
-//   });
 
-//   // send message to a specific user
-//   socket.on("send-message", (data) => {
-//     const { receiverId } = data;
-//     const user = activeUsers.find((user) => user.userId === receiverId);
-//     console.log("Sending from socket to :", receiverId);
-//     console.log("Data: ", data);
-//     if (user) {
-//       io.to(user.socketId).emit("recieve-message", data);
-//     }
-//   });
-// });
+
