@@ -45,22 +45,15 @@ const server = app.listen(port, () =>
 const io = initIo(server);
 io.on("connection", (socket) => {
   //save socket id      // add new User
-  socket.on("updateSocketId", async (data) => {
-    const { _id } = await authSoket(data.token);
-    await userModel.updateOne({ _id }, { socketId: socket.id });
-    if (!activeUsers[data._id]) {
-      console.log("new connection", data);
-      activeUsers[data._id] = { ...data };
-    } else {
-      console.log("old connection");
-      delete activeUsers[_id];
-    }
-    socket.emit("updateSocketId", "Done");
-    // send all active users to new user
-    io.emit("get-users", activeUsers);
-  });
-
-
+  // socket.on("updateSocketId", async (data) => {
+  //   const { _id } = await authSoket(data.token);
+  //   await userModel.updateOne({ _id }, { socketId: socket.id });
+  //   socket.emit("updateSocketId", "Done");
+  //   // send all active users to new user
+  //   io.emit("get-users", activeUsers);
+  // });
+  console.log("connected");
+  
   socket.on("disconnect", () => {
     console.log("A user disconnected");
     delete activeUsers[socket.id];

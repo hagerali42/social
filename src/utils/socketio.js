@@ -12,8 +12,9 @@ import cors from 'cors'
 
 let io 
 export const initIo =(server)=>{
-
-    io =new Server(server,{
+   
+    io = new Server(server, {
+        pingTimeout:60000,
         cors: "*"
     })
     return io
