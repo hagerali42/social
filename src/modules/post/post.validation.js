@@ -45,7 +45,6 @@ export const getPost={
     }),
     params: joi.object().required().keys({
     }),
-    query: joi.object().required().keys({})
 }
 export const getPostById={
     body: joi.object().required().keys({
