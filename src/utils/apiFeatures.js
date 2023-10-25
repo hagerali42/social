@@ -9,7 +9,7 @@ export class ApiFeature {
     let page = this.queryData.page;
     let size = this.queryData.size;
     if (page <= 0 || !page) page = 1;
-    if (size <= 0 || !size) size = 5;
+    if (size <= 0 || !size) size = 20;
     const skip = size * (page - 1);
 
     model.countDocuments().then((length) => {
