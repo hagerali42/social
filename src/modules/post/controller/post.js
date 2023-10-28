@@ -59,7 +59,7 @@ export const updatedPost = async (req, res, next) => {
       const public_id = post.images[i].public_id;
       cloudinary.uploader.destroy(public_id);
     }
-    post.images = [];
+    req.body.images = [];
   }
   //  if post have images and will update
   if (req.files.images?.length) {
@@ -89,7 +89,7 @@ export const updatedPost = async (req, res, next) => {
       const public_id = post.videos[i].public_id;
       cloudinary.uploader.destroy(public_id);
     }
-    post.videos=[]
+    req.body.videos = [];
   }
   
   if (req.files.videos?.length) {
