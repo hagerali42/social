@@ -170,7 +170,7 @@ export const getAllPosts = async (req, res, next) => {
     .populate("replaycomments")
     .populate("createdBy");
   mongooseQuery = userModel.populate(mongooseQuery, {
-    path: "comments.createdBy ",
+    path: "comments.createdBy",
   });
  const apiFeature=new ApiFeature(mongooseQuery,req.query)
 //  .pagination(postsModel)
