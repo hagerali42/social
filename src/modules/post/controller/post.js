@@ -167,10 +167,10 @@ export const getAllPosts = async (req, res, next) => {
 
     .populate("replaycomments")
     .populate("createdBy");
-    mongooseQuery = userModel.populate(mongooseQuery, {
-    path: "comments.createdBy",
-    select: "userName image email",
-  });
+  //   mongooseQuery = userModel.populate(mongooseQuery, {
+  //   path: "comments.createdBy",
+  //   select: "userName image email",
+  // });
 
  const apiFeature=new ApiFeature(mongooseQuery,req.query)
 //  .pagination(postsModel)
@@ -187,8 +187,13 @@ export const getAllPosts = async (req, res, next) => {
 // - Get post by id
 export const getPostById = async (req, res, next) => {
   const postId = req.params.postId;
-    const post = await postsModel.findById(postId)
+
+    let post = await postsModel.findById(postId)
     .populate('comments replaycomments createdBy likes');
+      post = await userModel.populate(post, {
+        path: "comments.createdBy",
+        select: "userName image email",
+      });
     if (!post) {
       return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
     }
