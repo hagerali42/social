@@ -159,24 +159,28 @@ export const deletedPost = async (req, res, next) => {
 
 export const getAllPosts = async (req, res, next) => {
 
-  var mongooseQuery = postsModel.find({
+  var mongooseQuery = postsModel
+    .find({
       createdBy: { $ne: null },
     })
     .populate("createdBy likes")
-      .populate({
-        path: "replaycomments",
-        populate: {
-          path: "createdBy",
-          select: "userName image email",
-        },
-      })
-      .populate({
-        path: "comments",
-        populate: {
-          path: "createdBy",
-          select: "userName image email",
-        },
-      });
+    .populate({
+      path: "comments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+      populate: {
+        path: "replies",
+      },
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
   //   mongooseQuery = userModel.populate(mongooseQuery, {
   //   path: "comments.createdBy",
   //   select: "userName image email",
@@ -202,23 +206,22 @@ export const getPostById = async (req, res, next) => {
     .findById(postId)
     .populate("createdBy likes")
     .populate({
-      path: "replaycomments",
+      path: "comments",
       populate: {
-        path: "createdBy",
+        path: "createdBy likes",
         select: "userName image email",
+      },
+      populate: {
+        path: "replies",
       },
     })
     .populate({
-      path: "comments",
+      path: "replaycomments",
       populate: {
-        path: "createdBy",
+        path: "createdBy likes",
         select: "userName image email",
       },
     });
-      // post = await userModel.populate(post, {
-      //   path: "comments.createdBy",
-      //   select: "userName image email",
-      // });
     if (!post) {
       return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
     }
