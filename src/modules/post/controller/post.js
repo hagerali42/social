@@ -190,9 +190,9 @@ export const getPostById = async (req, res, next) => {
 
     let post = await postsModel
       .findById(postId)
-      .populate(
-        "comments comments.createdBy replaycomments replaycomments.createdBy createdBy likes"
-      );
+      .populate("comments replaycomments createdBy likes")
+    .populate("comments.createdBy")
+  .populate("replaycomments.createdBy");
       post = await userModel.populate(post, {
         path: "comments.createdBy",
         select: "userName image email",
