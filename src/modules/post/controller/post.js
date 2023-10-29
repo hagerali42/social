@@ -164,12 +164,21 @@ export const getAllPosts = async (req, res, next) => {
       createdBy: { $ne: null },
     })
     .populate("createdBy likes")
-
     .populate({
       path: "comments",
-      populate: {
-        path: "createdBy likes replies",
-      },
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
     })
     .populate({
       path: "replaycomments",
@@ -203,14 +212,20 @@ export const getPostById = async (req, res, next) => {
     .findById(postId)
     .populate("createdBy likes")
     .populate({
-      path: "comments",
-      populate: {
-        path: "createdBy likes",
-        select: "userName image email",
-      },
-      populate: {
-        path: "replies",
-      },
+    path: "comments",
+     populate: [
+          {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+          {
+            path: "replies",
+            populate: {
+              path: "createdBy likes",
+              select: "userName image email",
+            },
+          },
+        ],
     })
     .populate({
       path: "replaycomments",
