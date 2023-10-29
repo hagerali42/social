@@ -36,7 +36,6 @@ export const getComment = async (req, res, next) => {
     .populate("replies")
     .populate("createdBy")
     .populate("likes")
-    .populate("replies");
   return res.status(StatusCodes.OK).json({ message: "Done", comments });
 };
 // - Update comment ( by comment owner only )

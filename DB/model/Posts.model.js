@@ -26,6 +26,8 @@ postsSchema.virtual("replaycomments", {
   ref: "CommentReply"
 });
 
+
+
 const postsModel = model('Post', postsSchema)
 
 export default postsModel
