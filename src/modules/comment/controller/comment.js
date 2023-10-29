@@ -31,7 +31,7 @@ export const AddComment = async (req, res, next) => {
 };
 export const getComment = async (req, res, next) => {
   const { postId } = req.params;
-  const post = await commentModel
+  const comments = await commentModel
     .find({ postId: postId })
     .populate("createdBy replies");
   if (!post || post.isDeleted) {
