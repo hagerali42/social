@@ -14,16 +14,26 @@ const postsSchema = new Schema({
     toObject:{virtuals:true},
     timestamps: true
 })
-postsSchema.virtual('comments',{
+postsSchema.virtual('comments ',{
     localField:'_id',
     foreignField:'postId',
     ref:'Comment'
 })
+postsSchema.virtual("comments.createdBy", {
+  localField: "_id",
+  foreignField: "postId",
+  ref: "Comment",
+});
 postsSchema.virtual('replaycomments',{
     localField:'_id',
     foreignField:'postId',
     ref:'CommentReply'
 })
+postsSchema.virtual("replaycomments.createdBy", {
+  localField: "_id",
+  foreignField: "postId",
+  ref: "CommentReply",
+});
 const postsModel = model('Post', postsSchema)
 
 export default postsModel
