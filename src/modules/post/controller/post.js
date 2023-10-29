@@ -164,7 +164,7 @@ export const getAllPosts = async (req, res, next) => {
       createdBy: { $ne: null },
       // "createdBy.isDeleted": false,
     })
-    .populate("comments")
+    .populate("comments comments.createdBy")
     .populate("likes")
 
     .populate("replaycomments")
