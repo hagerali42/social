@@ -31,17 +31,7 @@ export const AddComment = async (req, res, next) => {
 };
 export const getComment = async (req, res, next) => {
   const { postId } = req.params;
-  const comments = await commentModel
-    .find({ postId: postId })
-    .populate("createdBy replies");
-  if (!post || post.isDeleted) {
-    return next(
-      new ErrorClass(
-        "Cannot add comment to a deleted post",
-        StatusCodes.NOT_FOUND
-      )
-    );
-  }
+  const comments = await commentModel.find({ postId: postId }).populate("createdBy replies");
   return res.status(StatusCodes.OK).json({ message: "Done", comments });
 };
 // - Update comment ( by comment owner only )
