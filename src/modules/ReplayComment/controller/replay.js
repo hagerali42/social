@@ -29,12 +29,16 @@ export const AddReplayComment = async (req, res, next) => {
     }
     
     // Create and save the reply comment
-      const replyComment = await commentReplyModel.create({
+      const replyComment = new commentReplyModel.create({
           replyBody,
           createdBy:userId,
           commentId,
           postId:comment.postId,
-        });
+      });
+  await replyComment.save()
+  comment.replies.push(replyComment._id);
+   await comment.save();
+
 
     return res.status(StatusCodes.OK).json({ message: "Done", replyComment });
   };

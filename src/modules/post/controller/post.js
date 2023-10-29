@@ -158,7 +158,6 @@ export const deletedPost = async (req, res, next) => {
 // - Get all posts with their comments ( user that has isDeleted equal true can’t get posts )
 
 export const getAllPosts = async (req, res, next) => {
-
   var mongooseQuery = postsModel
     .find({
       createdBy: { $ne: null },
@@ -187,11 +186,6 @@ export const getAllPosts = async (req, res, next) => {
         select: "userName image email",
       },
     });
-  //   mongooseQuery = userModel.populate(mongooseQuery, {
-  //   path: "comments.createdBy",
-  //   select: "userName image email",
-  // });
-
  const apiFeature=new ApiFeature(mongooseQuery,req.query)
 //  .pagination(postsModel)
     .search()
