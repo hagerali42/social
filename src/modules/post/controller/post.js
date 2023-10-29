@@ -159,17 +159,19 @@ export const deletedPost = async (req, res, next) => {
 
 export const getAllPosts = async (req, res, next) => {
 
-  const mongooseQuery = postsModel
+  var mongooseQuery = postsModel
     .find({
       createdBy: { $ne: null },
       // "createdBy.isDeleted": false,
     })
-    .populate("comments comments.createdBy")
+    .populate("comments")
     .populate("likes")
 
     .populate("replaycomments")
     .populate("createdBy");
-
+  mongooseQuery = userModel.populate(mongooseQuery, {
+    path: "comments.createdBy ",
+  });
  const apiFeature=new ApiFeature(mongooseQuery,req.query)
 //  .pagination(postsModel)
     .search()
