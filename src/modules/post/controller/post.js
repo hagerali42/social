@@ -164,14 +164,11 @@ export const getAllPosts = async (req, res, next) => {
       createdBy: { $ne: null },
     })
     .populate("createdBy likes")
+
     .populate({
       path: "comments",
       populate: {
-        path: "createdBy likes",
-        select: "userName image email",
-      },
-      populate: {
-        path: "replies",
+        path: "createdBy likes replies",
       },
     })
     .populate({
