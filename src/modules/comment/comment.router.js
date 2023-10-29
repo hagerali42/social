@@ -14,7 +14,13 @@ router.route("/")
   validation(Val.addcomment),
   asyncHandler(commentController.AddComment)
 )
-
+router
+  .route("/post/:postId")
+  .get(
+    auth,
+    validation(Val.getComment),
+    asyncHandler(commentController.getComment)
+  );
 
 router.route("/:commentId")
 //delete comment

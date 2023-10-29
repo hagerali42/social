@@ -27,3 +27,11 @@ export const deleteComment = {
     }),
     query: joi.object().required().keys({})
 }
+export const getComment = {
+  body: joi.object().required().keys({
+  }),
+  params: joi.object().required().keys({
+    postId: generalFields.id,
+  }),
+  query: joi.object().required().keys({}),
+};

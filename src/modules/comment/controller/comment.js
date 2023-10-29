@@ -29,7 +29,21 @@ export const AddComment = async (req, res, next) => {
   await comment.save();
   return res.status(StatusCodes.OK).json({ message: "Done", comment });
 };
-
+export const getComment = async (req, res, next) => {
+  const { postId } = req.params;
+  const post = await commentModel
+    .find({ postId: postId })
+    .populate("createdBy replies");
+  if (!post || post.isDeleted) {
+    return next(
+      new ErrorClass(
+        "Cannot add comment to a deleted post",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
+  return res.status(StatusCodes.OK).json({ message: "Done", comments });
+};
 // - Update comment ( by comment owner only )
 export const updateComment = async (req, res, next) => {
   const { commentBody } = req.body;
