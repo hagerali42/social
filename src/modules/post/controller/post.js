@@ -162,11 +162,21 @@ export const getAllPosts = async (req, res, next) => {
   var mongooseQuery = postsModel.find({
       createdBy: { $ne: null },
     })
-    .populate("comments")
-    .populate("likes")
-
-    .populate("replaycomments")
-    .populate("createdBy");
+    .populate("createdBy likes")
+      .populate({
+        path: "replaycomments",
+        populate: {
+          path: "createdBy",
+          select: "userName image email",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "createdBy",
+          select: "userName image email",
+        },
+      });
   //   mongooseQuery = userModel.populate(mongooseQuery, {
   //   path: "comments.createdBy",
   //   select: "userName image email",
@@ -191,10 +201,20 @@ export const getPostById = async (req, res, next) => {
   let post = await postsModel
     .findById(postId)
     .populate("createdBy likes")
-    .populate("replaycomments")
-    .populate("replaycomments.createdBy")
-    .populate("comments")
-    .populate("comments.createdBy");
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy",
+        select: "userName image email",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "createdBy",
+        select: "userName image email",
+      },
+    });
       // post = await userModel.populate(post, {
       //   path: "comments.createdBy",
       //   select: "userName image email",

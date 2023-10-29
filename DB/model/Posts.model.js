@@ -14,36 +14,18 @@ const postsSchema = new Schema({
     toObject:{virtuals:true},
     timestamps: true
 })
-// postsSchema.virtual('comments',{
-//     localField:'_id',
-//     foreignField:'postId',
-//     ref:'Comment'
-// })
-postsSchema.virtual("comments", {
-  localField: "_id",
-  foreignField: "postId",
-  ref: "Comment",
-  justOne: false, // Set this to false if there can be multiple replaycomments
-  populate: {
-    path: "createdBy", // Define the path to populate within replaycomments
-    model: "User", // Replace "User" with the actual model name for createdBy
-  },
-});
-// postsSchema.virtual("replaycomments", {
-//   localField: "_id",
-//   foreignField: "postId",
-//   ref: "CommentReply"
-// });
+postsSchema.virtual('comments',{
+    localField:'_id',
+    foreignField:'postId',
+    ref:'Comment'
+})
+
 postsSchema.virtual("replaycomments", {
   localField: "_id",
   foreignField: "postId",
-  ref: "CommentReply",
-  justOne: false, // Set this to false if there can be multiple replaycomments
-  populate: {
-    path: "createdBy", // Define the path to populate within replaycomments
-    model: "User", // Replace "User" with the actual model name for createdBy
-  },
+  ref: "CommentReply"
 });
+
 
 
 const postsModel = model('Post', postsSchema)
