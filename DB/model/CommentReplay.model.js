@@ -6,7 +6,7 @@ const ReplaycommentSchema = new Schema({
   createdBy: { type: Types.ObjectId, ref: 'User', required: true },
   commentId: { type: Types.ObjectId, ref: 'Comment', required: true },
   likes: [{ type: Types.ObjectId, ref: 'User' }],
-  postId: { type: Types.ObjectId, ref: 'Post',},
+  postId: { type: Types.ObjectId, ref: 'Post'},
 
 });
 

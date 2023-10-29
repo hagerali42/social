@@ -20,11 +20,11 @@ postsSchema.virtual('comments',{
     ref:'Comment'
 })
 
-postsSchema.virtual('replaycomments',{
-    localField:'_id',
-    foreignField:'postId',
-    ref:'CommentReply'
-})
+postsSchema.virtual("replaycomments", {
+  localField: "_id",
+  foreignField: "postId",
+  ref: "CommentReply"
+});
 
 const postsModel = model('Post', postsSchema)
 

@@ -33,8 +33,8 @@ export const getComment = async (req, res, next) => {
   const { postId } = req.params;
   const comments = await commentModel
     .find({ postId: postId })
-    .populate("createdBy")
     .populate("replies")
+    .populate("createdBy")
     .populate("likes")
     .populate("replies");
   return res.status(StatusCodes.OK).json({ message: "Done", comments });

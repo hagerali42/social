@@ -191,12 +191,12 @@ export const getPostById = async (req, res, next) => {
     let post = await postsModel
       .findById(postId)
       .populate("comments replaycomments createdBy likes")
-    .populate("comments.createdBy")
-  .populate("replaycomments.createdBy");
-      post = await userModel.populate(post, {
-        path: "comments.createdBy",
-        select: "userName image email",
-      });
+      .populate("comments.createdBy")
+      .populate("replaycomments.createdBy");
+      // post = await userModel.populate(post, {
+      //   path: "comments.createdBy",
+      //   select: "userName image email",
+      // });
     if (!post) {
       return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
     }
