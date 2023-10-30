@@ -5,6 +5,7 @@ import postsModel from "../../../../DB/model/Posts.model.js";
 import { ErrorClass } from "../../../utils/error.Class.js";
 import userModel from "../../../../DB/model/User.model.js";
 import commentReplyModel from "../../../../DB/model/CommentReplay.model.js";
+import { getIo } from "../../../utils/socketio.js";
 
 // - replay ( can’t add reply comment on post has isDeleted equal true , user that has isDeleted equal true can’t add replay comment )
 export const AddReplayComment = async (req, res, next) => {
@@ -35,6 +36,8 @@ export const AddReplayComment = async (req, res, next) => {
           commentId,
           postId:comment.postId,
   });
+    getIo().emit("new Replaycomment", replyComment);
+
   await replyComment.save()
   comment.replies.push(replyComment._id);
   await comment.save();
