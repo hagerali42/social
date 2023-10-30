@@ -43,8 +43,8 @@ export const AddPost = async (req, res, next) => {
   req.body.content = req.body.content;
   req.body.createdBy = req.user._id;
 
-  const post = await postsModel.create(req.body);
-  await post.populate("createdBy likes").populate({
+  const post =  postsModel.create(req.body);
+   post.populate("createdBy likes").populate({
     path: "comments",
     populate: [
       {
@@ -59,7 +59,8 @@ export const AddPost = async (req, res, next) => {
         },
       },
     ],
-  });
+   });
+  await post.save()
   getIo().emit("new post", post);
   return res.status(StatusCodes.OK).json({ message: "Done", post });
 };
