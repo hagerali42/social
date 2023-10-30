@@ -7,6 +7,8 @@ import commentReplyModel from "./../../../../DB/model/CommentReplay.model.js";
 import userModel from "../../../../DB/model/User.model.js";
 import { ApiFeature } from './../../../utils/apiFeatures.js';
 import { getIo } from "../../../utils/socketio.js";
+import { startOfDay, endOfDay, subDays } from "date-fns";
+
 
 // - add post ( valid user only can add post)
 export const AddPost = async (req, res, next) => {
@@ -319,8 +321,6 @@ export const UpdatePostPrivacy = async (req, res, next) => {
 };
 
 // - get posts created yesterday
-import { startOfDay, endOfDay, subDays } from "date-fns";
-import { getIo } from "../../../utils/socketio.js";
 export const GetPostsCreatedYesterday = async (req, res, next) => {
     const yesterday = subDays(new Date(), 1); // Calculate yesterday's date
     const startOfYesterday = startOfDay(yesterday); // Start of yesterday (00:00:00)
