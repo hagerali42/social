@@ -43,8 +43,33 @@ export const AddPost = async (req, res, next) => {
   req.body.content = req.body.content;
   req.body.createdBy = req.user._id;
 
-  const post = await postsModel.create(req.body);
- 
+  const cpost = await postsModel.create(req.body);
+  let post = await postsModel
+    .findById(cpost._id)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
   getIo().emit("new post", post);
   return res.status(StatusCodes.OK).json({ message: "Done", post });
 };
