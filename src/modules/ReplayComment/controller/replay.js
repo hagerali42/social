@@ -9,40 +9,64 @@ import { getIo } from "../../../utils/socketio.js";
 
 // - replay ( can’t add reply comment on post has isDeleted equal true , user that has isDeleted equal true can’t add replay comment )
 export const AddReplayComment = async (req, res, next) => {
-    const { replyBody, commentId } = req.body;
-    const userId = req.user._id;
+  const { replyBody, commentId } = req.body;
+  const userId = req.user._id;
 
-    // Check if the comment exists
-    const comment = await commentModel.findById(commentId);
-    if (!comment) {
-        return next(new ErrorClass('Comment not found', StatusCodes.NOT_FOUND));
-    }
-    // Check if the post associated with the comment has isDeleted equal to true
-    const post = await postsModel.findById(comment.postId);
-    if (!post || post.isDeleted) {
-      return next(new ErrorClass('Cannot add reply comment to a deleted post', StatusCodes.BAD_REQUEST));
-    }
-  
-    // Check if the user has isDeleted equal to true
-      const user = await userModel.findById(userId);
-    if (!user || user.isDeleted) {
-      return next(new ErrorClass("Cannot add reply comment as a deleted user", StatusCodes.NOT_FOUND))
-    }
-    
-    // Create and save the reply comment
+  // Check if the comment exists
+  const comment = await commentModel.findById(commentId);
+  if (!comment) {
+    return next(new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
+  }
+  // Check if the post associated with the comment has isDeleted equal to true
+  const post = await postsModel.findById(comment.postId);
+  if (!post || post.isDeleted) {
+    return next(
+      new ErrorClass(
+        "Cannot add reply comment to a deleted post",
+        StatusCodes.BAD_REQUEST
+      )
+    );
+  }
+
+  // Check if the user has isDeleted equal to true
+  const user = await userModel.findById(userId);
+  if (!user || user.isDeleted) {
+    return next(
+      new ErrorClass(
+        "Cannot add reply comment as a deleted user",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
+
+  // Create and save the reply comment
   const replyComment = new commentReplyModel({
-          replyBody,
-          createdBy:userId,
-          commentId,
-          postId:comment.postId,
+    replyBody,
+    createdBy: userId,
+    commentId,
+    postId: comment.postId,
   });
-    getIo().emit("new Replaycomment", replyComment);
+  await replyComment.populate("createdBy likes")
 
-  await replyComment.save()
-  comment.replies.push(replyComment._id);
-  await comment.save();
-    return res.status(StatusCodes.OK).json({ message: "Done", replyComment });
-  };
+  // Use a database transaction to ensure data consistency
+  const session = await commentReplyModel.startSession();
+  session.startTransaction();
+  try {
+    await replyComment.save();
+    comment.replies.push(replyComment._id);
+    await comment.save();
+
+    await session.commitTransaction();
+    session.endSession();
+  } catch (error) {
+    // If any error occurs during the transaction, roll it back
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+  getIo().emit("new Replaycomment", replyComment);
+  return res.status(StatusCodes.OK).json({ message: "Done", replyComment });
+};
 
   // - Update updateReplyComment ( by ReplyComment owner only )
 export const updateReplyComment=async  (req ,res,next)=>{

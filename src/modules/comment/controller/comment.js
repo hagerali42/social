@@ -26,8 +26,9 @@ export const AddComment = async (req, res, next) => {
     createdBy: userId,
     postId,
   });
-  getIo().emit("new comment", comment);
+   comment.populate("createdBy likes replies");
 
+  
   await comment.save();
   return res.status(StatusCodes.OK).json({ message: "Done", comment });
 };
