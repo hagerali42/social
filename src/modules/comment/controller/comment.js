@@ -3,6 +3,7 @@ import postsModel from "../../../../DB/model/Posts.model.js";
 import userModel from "../../../../DB/model/User.model.js";
 import { ErrorClass } from "../../../utils/error.Class.js";
 import commentModel from "../../../../DB/model/Comment.model.js";
+import { getIo } from "../../../utils/socketio.js";
 
 // - Add comment ( can’t add comment on post has isDeleted equal true , user that has isDeleted equal true can’t add comment )
 export const AddComment = async (req, res, next) => {
@@ -25,6 +26,7 @@ export const AddComment = async (req, res, next) => {
     createdBy: userId,
     postId,
   });
+  getIo().emit("new comment", comment);
 
   await comment.save();
   return res.status(StatusCodes.OK).json({ message: "Done", comment });

@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
     socket.join(userData._id);
     socket.emit("connected");
   });
-// to join group chat
+// to join group chat by chat._id
   socket.on("join chat",  (room) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
