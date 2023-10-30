@@ -35,7 +35,7 @@ export const AddComment = async (req, res, next) => {
     postId,
   });
   comment.populate("createdBy likes replies");
-
+  socket.emit("new comment",comment);
   await comment.save();
   return res.status(StatusCodes.OK).json({ message: "Done", comment });
 };
