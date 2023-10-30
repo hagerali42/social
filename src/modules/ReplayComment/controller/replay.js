@@ -46,8 +46,7 @@ export const AddReplayComment = async (req, res, next) => {
     commentId,
     postId: comment.postId,
   });
-  await replyComment.populate("createdBy likes")
-
+  replyComment.populate("createdBy likes")
   // Use a database transaction to ensure data consistency
   const session = await commentReplyModel.startSession();
   session.startTransaction();

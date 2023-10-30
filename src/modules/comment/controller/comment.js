@@ -12,13 +12,21 @@ export const AddComment = async (req, res, next) => {
   //  post has isDeleted equal true
   const post = await postsModel.findById(postId);
   if (!post || post.isDeleted) {
-    return next(new ErrorClass("Cannot add comment to a deleted post", StatusCodes.NOT_FOUND));
+    return next(
+      new ErrorClass(
+        "Cannot add comment to a deleted post",
+        StatusCodes.NOT_FOUND
+      )
+    );
   }
   // Check user that has isDeleted equal true
   const user = await userModel.findById(userId);
   if (!user || user.isDeleted) {
     return next(
-      new ErrorClass("Cannot add comment as a deleted user", StatusCodes.NOT_FOUND)
+      new ErrorClass(
+        "Cannot add comment as a deleted user",
+        StatusCodes.NOT_FOUND
+      )
     );
   }
   const comment = new commentModel({
@@ -26,9 +34,8 @@ export const AddComment = async (req, res, next) => {
     createdBy: userId,
     postId,
   });
-   comment.populate("createdBy likes replies");
+  comment.populate("createdBy likes replies");
 
-  
   await comment.save();
   return res.status(StatusCodes.OK).json({ message: "Done", comment });
 };
