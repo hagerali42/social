@@ -295,6 +295,7 @@ export const getPostById = async (req, res, next) => {
 // - like post (user can like the post only one time )
 export const LikePost = async (req, res, next) => {
   const postId = req.params.postId;
+  const userId = req.user._id;
   const post = await postsModel
     .findById(postId)
     .populate("createdBy likes")
@@ -339,7 +340,7 @@ export const LikePost = async (req, res, next) => {
   }
  
   // Add a like to the post
-  post.likes.push(req.user._id);
+  post.likes.push(userId);
   await post.save();
   getIo().emit("likePost", post);
   return res.status(StatusCodes.OK).json({ message: "Post liked Done", post });
