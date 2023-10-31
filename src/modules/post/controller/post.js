@@ -208,7 +208,7 @@ export const deletedPost = async (req, res, next) => {
   await postsModel.updateOne({_id: postId },{isDeleted:true},{new:true})
     //delet from DataBase
   await postsModel.deleteOne({ _id: postId });
-  getIo().emit("deletPost")
+  getIo().emit("deletPost",postId)
   return res
     .status(StatusCodes.OK)
     .json({ message: "Post deleted successfully" });
