@@ -143,9 +143,35 @@ export const updatedPost = async (req, res, next) => {
   const updateData = { ...req.body };
   post.set(updateData);
   // const updatedPost = await post.save();
-  const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {
-    new: true,
-  });
+  const updatedPost = await postsModel
+    .updateOne({ _id: postId }, req.body, {
+      new: true,
+    })
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
+  getIo().emit("updatePost", updatedPost);
   return res
     .status(StatusCodes.OK)
     .json({ message: "Post updated successfully", post: updatedPost });
@@ -182,6 +208,7 @@ export const deletedPost = async (req, res, next) => {
   await postsModel.updateOne({_id: postId },{isDeleted:true},{new:true})
     //delet from DataBase
   await postsModel.deleteOne({ _id: postId });
+  getIo().emit("deletPost")
   return res.status(StatusCodes.OK).json({ message: "Post deleted successfully" });
 };
 
@@ -268,7 +295,32 @@ export const getPostById = async (req, res, next) => {
 // - like post (user can like the post only one time )
 export const LikePost = async (req, res, next) => {
   const postId = req.params.postId;
-  const post = await postsModel.findById(postId);
+  const post = await postsModel
+    .findById(postId)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
@@ -279,15 +331,42 @@ export const LikePost = async (req, res, next) => {
     );
   }
   post.likes.push(req.user._id);
+
   await post.save();
-  return res.status(StatusCodes.OK).json({ message: "Post liked Done" });
+  getIo().emit("likePost", post);
+  return res.status(StatusCodes.OK).json({ message: "Post liked Done",post });
 };
 
 // - Unlike post
 export const UnlikePost = async (req, res, next) => {
   const postId = req.params.postId;
   const userId = req.user._id;
-    const post = await postsModel.findById(postId);
+    const post = await postsModel
+      .findById(postId)
+      .populate("createdBy likes")
+      .populate({
+        path: "comments",
+        populate: [
+          {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+          {
+            path: "replies",
+            populate: {
+              path: "createdBy likes",
+              select: "userName image email",
+            },
+          },
+        ],
+      })
+      .populate({
+        path: "replaycomments",
+        populate: {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+      });
     if (!post) {
       return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
     }
@@ -301,8 +380,9 @@ export const UnlikePost = async (req, res, next) => {
 
     // Remove the user's id from the likes array
     post.likes = post.likes.filter((likeUser) => likeUser.toString() !== userId.toString());
-    await post.save();
-    return res.status(StatusCodes.OK).json({ message: "Post unliked successfully" });
+  await post.save();
+  getIo().emit("unlikePost", post);
+  return res.status(StatusCodes.OK).json({ message: "Post unliked successfully" ,post});
 
 };
 
