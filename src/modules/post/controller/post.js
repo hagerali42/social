@@ -341,49 +341,60 @@ export const LikePost = async (req, res, next) => {
 export const UnlikePost = async (req, res, next) => {
   const postId = req.params.postId;
   const userId = req.user._id;
-    const post = await postsModel
-      .findById(postId)
-      .populate("createdBy likes")
-      .populate({
-        path: "comments",
-        populate: [
-          {
-            path: "createdBy likes",
-            select: "userName image email",
-          },
-          {
-            path: "replies",
-            populate: {
-              path: "createdBy likes",
-              select: "userName image email",
-            },
-          },
-        ],
-      })
-      .populate({
-        path: "replaycomments",
-        populate: {
+  const post = await postsModel
+    .findById(postId)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
           path: "createdBy likes",
           select: "userName image email",
         },
-      });
-    if (!post) {
-      return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
-    }
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
+  if (!post) {
+    return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
+  }
+  // Check if the user has already liked the post
+  const userLiked = post.likes.some(
+    (like) => like._id.toString() === userId.toString()
+  );
 
-    // Check if the user has already liked the post
-    if (!post.likes.includes(userId)) {
-      return next(
-        new ErrorClass("You haven't liked this post, so you can't unlike it.", StatusCodes.BAD_REQUEST)
-      );
-    }
+  if (!userLiked) {
+    return next(
+      new ErrorClass(
+        "You haven't liked this post, so you can't unlike it.",
+        StatusCodes.BAD_REQUEST
+      )
+    );
+  }
 
-    // Remove the user's id from the likes array
-    post.likes = post.likes.filter((likeUser) => likeUser.toString() !== userId.toString());
+  // Remove the user's ID from the 'likes' array
+  post.likes = post.likes.filter(
+    (like) => like._id.toString() !== userId.toString()
+  );
+
+  // Save the updated post
   await post.save();
   getIo().emit("unlikePost", post);
-  return res.status(StatusCodes.OK).json({ message: "Post unliked successfully" ,post});
-
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Post unliked successfully", post });
 };
 
 
