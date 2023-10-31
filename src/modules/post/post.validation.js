@@ -31,10 +31,6 @@ export const updatePost = {
 export const deletPost = {
     body: joi.object().required().keys({
     }),
-    files: joi.object().required().keys({
-        images:joi.array().items(generalFields.file).max(4),
-        videos:joi.array().items(generalFields.file).max(2),
-    }), 
     params: joi.object().required().keys({
         postId:generalFields.id
     }),

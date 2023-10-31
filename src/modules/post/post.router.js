@@ -41,10 +41,6 @@ router.route("/:postId")
   //delet post
 .delete(
     auth,
-    fileUpload([...fileValidation.image, ...fileValidation.video]).fields([
-      { name: "images", maxCount: 4 },
-      { name: "videos", maxCount: 2 },
-    ]),
     validation(Val.deletPost),
     asyncHandler(postController.deletedPost)
   )
