@@ -143,38 +143,37 @@ export const updatedPost = async (req, res, next) => {
   const updateData = { ...req.body };
   post.set(updateData);
   // const updatedPost = await post.save();
-  const updatedPost = await postsModel
-    .updateOne({ _id: postId }, req.body, {
-      new: true,
-    })
-    .populate("createdBy likes")
-    .populate({
-      path: "comments",
-      populate: [
-        {
-          path: "createdBy likes",
-          select: "userName image email",
-        },
-        {
-          path: "replies",
-          populate: {
-            path: "createdBy likes",
-            select: "userName image email",
-          },
-        },
-      ],
-    })
-    .populate({
-      path: "replaycomments",
-      populate: {
-        path: "createdBy likes",
-        select: "userName image email",
-      },
-    });
-  getIo().emit("updatePost", updatedPost);
+  const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
+   const postUpdated = await postsModel
+     .findById(updatedPost._id)
+     .populate("createdBy likes")
+     .populate({
+       path: "comments",
+       populate: [
+         {
+           path: "createdBy likes",
+           select: "userName image email",
+         },
+         {
+           path: "replies",
+           populate: {
+             path: "createdBy likes",
+             select: "userName image email",
+           },
+         },
+       ],
+     })
+     .populate({
+       path: "replaycomments",
+       populate: {
+         path: "createdBy likes",
+         select: "userName image email",
+       },
+     });
+  getIo().emit("updatePost", postUpdated);
   return res
     .status(StatusCodes.OK)
-    .json({ message: "Post updated successfully", updatedPost });
+    .json({ message: "Post updated successfully", postUpdated });
 };
 // - Delete post ( by post owner only )(also delete post's comments )(delete pictures from cloudinary also)
 export const deletedPost = async (req, res, next) => {
