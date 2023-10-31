@@ -209,7 +209,9 @@ export const deletedPost = async (req, res, next) => {
     //delet from DataBase
   await postsModel.deleteOne({ _id: postId });
   getIo().emit("deletPost")
-  return res.status(StatusCodes.OK).json({ message: "Post deleted successfully" });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Post deleted successfully", postId });
 };
 
 // - Get all posts with their comments ( user that has isDeleted equal true can’t get posts )
