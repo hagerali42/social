@@ -54,7 +54,9 @@ export const updateComment = async (req, res, next) => {
   const { commentId } = req.params;
   const userId = req.user._id;
   // Check if the comment exists
-  const comment = await commentModel.findById(commentId);
+  const comment = await commentModel
+    .findById(commentId)
+    .populate("createdBy replies likes");
   if (!comment) {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
@@ -65,6 +67,8 @@ export const updateComment = async (req, res, next) => {
   }
   comment.commentBody = commentBody;
   await comment.save();
+    getIo().emit("updateComment", comment);
+
   return res.status(StatusCodes.OK).json({ message: "Done", comment });
 };
 
@@ -83,14 +87,22 @@ export const deleteComment = async (req, res, next) => {
     );
   }
   await commentModel.deleteOne({ _id: commentId });
-  return res.status(StatusCodes.OK).json({ message: " comment deleted " });
+  getIo().emit("deletComment", commentId);
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message:"comment deleted ", commentId });
 };
 
 // - like comment (user can like the comment only one time )
 export const LikeComment = async (req, res, next) => {
   const { commentId } = req.params;
   // Check if the comment exists
-  const comment = await commentModel.findById(commentId);
+  const comment = await commentModel
+    .findById(commentId)
+    .populate("replies")
+    .populate("createdBy")
+    .populate("likes");
   if (!comment) {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
@@ -101,7 +113,11 @@ export const LikeComment = async (req, res, next) => {
   }
   comment.likes.push(req.user._id);
   await comment.save();
-  return res.status(StatusCodes.OK).json({ message: "Comment liked Done" });
+  getIo().emit("likeComment", comment);
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Comment liked Done", comment });
 };
 
 // - Unlike comment
@@ -109,7 +125,11 @@ export const UnlikeComment = async (req, res, next) => {
   const { commentId } = req.params;
   const userId = req.user._id;
   // Check if the comment exists
-  const comment = await commentModel.findById(commentId);
+  const comment = await commentModel
+    .findById(commentId)
+    .populate("replies")
+    .populate("createdBy")
+    .populate("likes");
   if (!comment) {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
@@ -128,8 +148,10 @@ export const UnlikeComment = async (req, res, next) => {
     (likeUser) => likeUser.toString() !== userId.toString()
   );
   await comment.save();
+  getIo().emit("unlikeComment", comment);
+
   return res
     .status(StatusCodes.OK)
-    .json({ message: "Comment unliked successfully" });
+    .json({ message: "Comment unliked successfully", comment });
 };
 

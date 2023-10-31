@@ -82,6 +82,7 @@ export const updateReplyComment=async  (req ,res,next)=>{
     return next( new ErrorClass("You are not authorized to update this replayComment",StatusCodes.UNAUTHORIZED));}
     replayComment.replyBody = replyBody;
   await replayComment.save();
+    getIo().emit("updateReplyComment", replayComment);
   return res.status(StatusCodes.OK).json({ message: "Done", replayComment });
 }
 
@@ -103,15 +104,19 @@ export const deleteReplyComment = async (req, res, next) => {
         )
       );
     }
-    await commentReplyModel.deleteOne({ _id: replyCommentId });
-    return res.status(StatusCodes.OK).json({ message: " ReplyComment deleted " });
+  await commentReplyModel.deleteOne({ _id: replyCommentId });
+      getIo().emit("deleteReplyComment", replyCommentId);
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: " ReplyComment deleted ", replyCommentId });
 };
 
 // - like ReplyComment (user can like the ReplyComment only one time )
 export const LikeReplyComment = async (req, res, next) => {
   const { replyCommentId } = req.params;
   // Check if the ReplyComment exists
-  const ReplyComment = await commentReplyModel.findById(replyCommentId);
+  const ReplyComment = await commentReplyModel.findById(replyCommentId).populate("createdBy");
   if (!ReplyComment) {
     return next( new ErrorClass("ReplyComment not found", StatusCodes.NOT_FOUND));
   }
@@ -122,7 +127,12 @@ export const LikeReplyComment = async (req, res, next) => {
   }
   ReplyComment.likes.push(req.user._id);
   await ReplyComment.save();
-  return res.status(StatusCodes.OK).json({ message: "ReplyComment liked Done" });
+  //socketio
+  getIo().emit("likeReplyComment", ReplyComment);
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "ReplyComment liked Done", ReplyComment });
 };
 
 // - Unlike ReplyComment
@@ -130,7 +140,9 @@ export const UnlikeReplyComment = async (req, res, next) => {
   const { replyCommentId } = req.params;
   const userId = req.user._id;
   // Check if the ReplyComment exists
-  const ReplyComment = await commentReplyModel.findById(replyCommentId);
+  const ReplyComment = await commentReplyModel
+    .findById(replyCommentId)
+    .populate("createdBy");
   if (!ReplyComment) {
     return next( new ErrorClass("ReplyComment not found", StatusCodes.NOT_FOUND));
   }
@@ -147,5 +159,10 @@ export const UnlikeReplyComment = async (req, res, next) => {
   ReplyComment.likes = ReplyComment.likes.filter((likeUser) => likeUser.toString() !== userId.toString()
   );
   await ReplyComment.save();
-  return res.status(StatusCodes.OK).json({ message: "ReplyComment unliked successfully" });
+  // getIo().to(`room-${ReplyComment.post}`).emit('unlikeReplyComment', ReplyComment);
+  getIo().emit("unlikeReplyComment", ReplyComment);
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "ReplyComment unliked successfully", ReplyComment });
 };
