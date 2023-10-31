@@ -142,10 +142,9 @@ export const updatedPost = async (req, res, next) => {
 
   const updateData = { ...req.body };
   post.set(updateData);
-  // const updatedPost = await post.save();
-  const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
-   const postUpdated = await postsModel
-     .findById(updatedPost._id)
+  const updatedPost = await post.save();
+  // const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
+   const postUpdated = await postsModel.findById(updatedPost._id)
      .populate("createdBy likes")
      .populate({
        path: "comments",
@@ -171,8 +170,7 @@ export const updatedPost = async (req, res, next) => {
        },
      });
   getIo().emit("updatePost", postUpdated);
-  return res
-    .status(StatusCodes.OK)
+  return res.status(StatusCodes.OK)
     .json({ message: "Post updated successfully", postUpdated });
 };
 // - Delete post ( by post owner only )(also delete post's comments )(delete pictures from cloudinary also)
