@@ -211,7 +211,7 @@ export const deletedPost = async (req, res, next) => {
   getIo().emit("deletPost")
   return res
     .status(StatusCodes.OK)
-    .json({ message: "Post deleted successfully", postId });
+    .json({ message: "Post deleted successfully" });
 };
 
 // - Get all posts with their comments ( user that has isDeleted equal true can’t get posts )
