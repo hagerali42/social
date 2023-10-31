@@ -174,7 +174,7 @@ export const updatedPost = async (req, res, next) => {
   getIo().emit("updatePost", updatedPost);
   return res
     .status(StatusCodes.OK)
-    .json({ message: "Post updated successfully", post: updatedPost });
+    .json({ message: "Post updated successfully", updatedPost });
 };
 // - Delete post ( by post owner only )(also delete post's comments )(delete pictures from cloudinary also)
 export const deletedPost = async (req, res, next) => {
