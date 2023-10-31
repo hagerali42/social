@@ -322,19 +322,27 @@ export const LikePost = async (req, res, next) => {
       },
     });
   if (!post) {
-    return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
+    return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
   // Check if the user has already liked the post
-  if (post.likes.includes(req.user._id)) {
+  const userLiked = post.likes.some(
+    (like) => like._id.toString() === userId.toString()
+  );
+
+  if (userLiked) {
     return next(
-      new ErrorClass("You have already liked this post", StatusCodes.BAD_REQUEST)
+      new ErrorClass(
+        "You have already liked this post",
+        StatusCodes.BAD_REQUEST
+      )
     );
   }
+ 
+  // Add a like to the post
   post.likes.push(req.user._id);
-
   await post.save();
   getIo().emit("likePost", post);
-  return res.status(StatusCodes.OK).json({ message: "Post liked Done",post });
+  return res.status(StatusCodes.OK).json({ message: "Post liked Done", post });
 };
 
 // - Unlike post
