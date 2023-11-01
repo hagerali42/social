@@ -73,12 +73,12 @@ export const updateReplyComment=async  (req ,res,next)=>{
   const { replyCommentId } = req.params;
   const userId = req.user._id;
   // Check if the replyCommentId exists
-  const replayComment = await commentReplyModel.findById(replyCommentId);
+  const replayComment = await commentReplyModel.findById(replyCommentId).populate("createdBy likes");
   if (!replyCommentId) {
     return next( new ErrorClass("replyCommentId not found", StatusCodes.NOT_FOUND));
   }
   // Check if the user is the owner of the replyCommentId
-  if (replayComment.createdBy.toString() != userId) {
+  if (replayComment.createdBy._id.toString() !== userId.toString()) {
     return next( new ErrorClass("You are not authorized to update this replayComment",StatusCodes.UNAUTHORIZED));}
     replayComment.replyBody = replyBody;
   await replayComment.save();
@@ -96,7 +96,7 @@ export const deleteReplyComment = async (req, res, next) => {
       return next( new ErrorClass("ReplyComment not found", StatusCodes.NOT_FOUND));
     }
     // Check if the user is the owner of the ReplyComment
-    if (ReplyComment.createdBy.toString() != userId) {
+    if (ReplyComment.createdBy._id.toString() !== userId.toString()) {
       return next(
         new ErrorClass(
           "You are not authorized to delete this ReplyComment",
