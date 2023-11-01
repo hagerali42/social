@@ -60,8 +60,8 @@ export const updateComment = async (req, res, next) => {
   if (!comment) {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
-  // console.log("User ID:", userId);
-  // console.log("Comment Created By:", comment.createdBy.toString());
+  console.log("User ID:", userId);
+  console.log("Comment Created By:", comment.createdBy._id.toString());
   // Check if the user is the owner of the comment
   if (comment.createdBy._id.toString() !== userId) {
     return next( new ErrorClass("You are not authorized to update this comment",StatusCodes.UNAUTHORIZED)
