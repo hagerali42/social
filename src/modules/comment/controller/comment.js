@@ -60,11 +60,15 @@ export const updateComment = async (req, res, next) => {
   if (!comment) {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
-  console.log("User ID:", userId);
+  console.log("User ID:", userId.toString());
   console.log("Comment Created By:", comment.createdBy._id.toString());
   // Check if the user is the owner of the comment
-  if (comment.createdBy._id.toString() !== userId) {
-    return next( new ErrorClass("You are not authorized to update this comment",StatusCodes.UNAUTHORIZED)
+  if (userId.toString() !== comment.createdBy._id.toString()) {
+    return next(
+      new ErrorClass(
+        "You are not authorized to update this comment",
+        StatusCodes.UNAUTHORIZED
+      )
     );
   }
   comment.commentBody = commentBody;
@@ -84,7 +88,7 @@ export const deleteComment = async (req, res, next) => {
     return next( new ErrorClass("Comment not found", StatusCodes.NOT_FOUND));
   }
   // Check if the user is the owner of the comment
-  if (comment.createdBy._id.toString() !== userId) {
+  if (userId.toString() !== comment.createdBy._id.toString()) {
     return next(
       new ErrorClass(
         "You are not authorized to delete this comment",
