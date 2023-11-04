@@ -25,7 +25,11 @@ router.route("/")
     validation(Val.getPost),
     asyncHandler(postController.getAllPosts)
 )
-
+router.get("/postsProfile",
+  auth,
+  validation(Val.getPost),
+  asyncHandler(postController.getAllPostsFRomUser));
+  
 router.route("/:postId")
 //updatePost
 .put(

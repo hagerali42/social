@@ -253,7 +253,45 @@ export const getAllPosts = async (req, res, next) => {
  
 };
 
-
+export const getAllPostsFRomUser = async (req, res, next) => {
+    const userId = req.user._id;
+  var mongooseQuery = postsModel
+    .find({
+      createdBy: userId,
+    })
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
+  const apiFeature = new ApiFeature(mongooseQuery, req.query)
+    //  .pagination(postsModel)
+    .search()
+    .filter()
+    .sort()
+    .select();
+  const posts = await apiFeature.mongooseQuery;
+  return res.status(StatusCodes.OK).json({ message: "done", posts });
+};
 // - Get post by id
 export const getPostById = async (req, res, next) => {
   const postId = req.params.postId;
