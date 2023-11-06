@@ -169,7 +169,7 @@ export const addProfilePicture=async(req, res, next) => {
     { "image.secure_url": uploadeImage.secure_url },
     { new: true }
   );
-    getIo.emit("imgProfile", uploadeImage);
+    getIo().emit("imgProfile", uploadeImage);
 
   return res.status(StatusCodes.OK).json({ message: "Done", uploadeImage });
 }
