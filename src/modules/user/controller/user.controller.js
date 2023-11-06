@@ -13,7 +13,6 @@ import { getIo } from "../../../utils/socketio.js";
 export const getprofile =async(req, res, next) => {  
     const userProfile=await userModel.findById(req.user._id).populate('posts') 
       // Decrypt the phone number
-    userProfile.phone = CryptoJS.AES.decrypt(userProfile.phone, process.env.TOKEN_SIGNATURE).toString(CryptoJS.enc.Utf8);
       return res.status(StatusCodes.OK).json({ message: 'Done' ,userProfile});
     }
 // - update profile ( if you update your email you should confirm the new email also )
@@ -147,8 +146,7 @@ export const updateprofile =async(req, res, next) => {
       req.body.age= req.body.age    
     }
   if( req.body.phone){
-    // Encrypt
-    req.body.phone = CryptoJS.AES.encrypt(req.body.phone ,process.env.TOKEN_SIGNATURE).toString();
+    req.body.phone = req.body.phone;
     }
 
   const userProfile=await userModel.findByIdAndUpdate({_id:req.user._id},req.body);

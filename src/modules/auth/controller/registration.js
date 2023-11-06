@@ -20,9 +20,7 @@ export const signup = async (req, res, next) => {
 
 //2-hashedPassword
   req.body.password = hash({ plaintext: req.body.password  });
-
-//3- Encrypt the phone number
-  req.body.phone = CryptoJS.AES.encrypt( req.body.phone, process.env.TOKEN_SIGNATURE).toString();
+  req.body.phone = req.body.phone; 
 
   //image
   if(req.files?.image){
