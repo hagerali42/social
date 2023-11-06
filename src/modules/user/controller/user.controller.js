@@ -7,6 +7,7 @@ import { generateToken } from "../../../utils/GenerateAndVerifyToken.js";
 import CryptoJS from "crypto-js";
 import sendEmail from "../../../utils/email.js";
 import { ErrorClass } from "../../../utils/error.Class.js";
+import { getIo } from "../../../utils/socketio.js";
 
 // - Get user profile
 export const getprofile =async(req, res, next) => {  
@@ -158,13 +159,19 @@ export const updateprofile =async(req, res, next) => {
 // - add profile picture( the new picture must override the old one in the host also )
 export const addProfilePicture=async(req, res, next) => {
   const user = req.user; //from middleware
-  const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path,{folder:'social/user/profile'});
+  const uploadeImage = await cloudinary.uploader.upload(req.file.path,{folder:'social/user/profile'});
  if(user.image){
   await cloudinary.uploader.destroy(user.image.public_id);
  }
   //2-save file path in database
-  await userModel.updateOne({_id:req.user._id},{ image: { secure_url, public_id } },{ new: true });
-  return res.status(StatusCodes.OK).json({ message: 'Done' });
+  await userModel.updateOne(
+    { _id: req.user._id },
+    { "image.secure_url": uploadeImage.secure_url },
+    { new: true }
+  );
+    getIo.emit("imgProfile", uploadeImage);
+
+  return res.status(StatusCodes.OK).json({ message: "Done", uploadeImage });
 }
 
 // - add cover pictures ( keep the pervious ones )
@@ -186,7 +193,9 @@ export const profilecover= async (req, res, next) => {
     { coverImage: { secure_url, public_id } },
     { new: true }
   );
-  return res.status(StatusCodes.OK).json({ message: "Done" });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Done", coverImage: { secure_url, public_id } });
 }
  
 // - update password ( old password must be different from the new password )
