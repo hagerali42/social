@@ -26,15 +26,17 @@ export const addProfilePicture = {
     query: joi.object().required().keys({}),
 }
 export const change_password = {
-    body: joi.object().required().keys({
-        oldPassword: generalFields.password.required(),
-        newPassword:generalFields.password.required(),
-        cPassword:joi.string().valid(joi.ref("newPassword")),
-
+  body: joi
+    .object()
+    .required()
+    .keys({
+      oldPassword: generalFields.password.required(),
+      newPassword: generalFields.password.$required(),
+      cPassword: joi.string().valid(joi.ref("newPassword")),
     }),
-    params:joi.object().required().keys({}),
-    query: joi.object().required().keys({}),
-}
+  params: joi.object().required().keys({}),
+  query: joi.object().required().keys({}),
+};
 export const deleteSoft={
     body: joi.object().required().keys({
     }),

@@ -198,31 +198,26 @@ export const profilecover= async (req, res, next) => {
  
 // - update password ( old password must be different from the new password )
 export const changePassword =async(req,res,next) => {
-      const user = req.user;   //FROM auth middleware 
-        const { oldPassword, newPassword } = req.body;
-         const oldPasswordString = oldPassword.toString();
-         const newPasswordString = newPassword.toString();
-         if (oldPasswordString === newPasswordString) {
-           return next(
-             new ErrorClass(
-               "Old and new passwords cannot be the same",
-               StatusCodes.FORBIDDEN
-             )
-           );
-         }
-
-
-        const isMatch = compare({
-          plaintext: oldPasswordString,
-          hashValue: user.password,
-        });
-        if (!isMatch) {
-          return next(new Error('Invalid old password',StatusCodes.BAD_REQUEST))
-        }
-        let hashPassword = hash({ plaintext: newPasswordString });
-        await userModel.updateOne({_id:user._id},{password:hashPassword})
-        return res.status(StatusCodes.OK).json({ message: 'Password updated' });
+  const user = req.user; //FROM auth middleware
+  const { oldPassword, newPassword } = req.body;
+  if (oldPassword.toString() === newPassword.toString()) {
+    return next(
+      new ErrorClass(
+        "Old and new passwords cannot be the same",
+        StatusCodes.FORBIDDEN
+      )
+    );
   }
+const match = compare({ plaintext: oldPassword, hashValue: user.password });
+if (!match) {
+  return next(
+    new ErrorClass("Invalid old password", StatusCodes.NOT_ACCEPTABLE)
+  );
+}
+  let hashPassword = hash({ plaintext: newPassword });
+  await userModel.updateOne({ _id: user._id }, { password: hashPassword });
+  return res.status(StatusCodes.OK).json({ message: "Password updated" });
+}
 
 // - SoftDelete profile ( by account owner only )
 export const deleteSoft =async(req, res, next) => {
