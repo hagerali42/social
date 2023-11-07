@@ -200,14 +200,26 @@ export const profilecover= async (req, res, next) => {
 export const changePassword =async(req,res,next) => {
       const user = req.user;   //FROM auth middleware 
         const { oldPassword, newPassword } = req.body;
-        if(oldPassword===newPassword.toString()){
-          return next(new ErrorClass("Old and New passwords are same", StatusCodes.FORBIDDEN));
-        }
-        const isMatch =compare({plaintext:oldPassword,hashValue:user.password})
+         const oldPasswordString = oldPassword.toString();
+         const newPasswordString = newPassword.toString();
+         if (oldPasswordString === newPasswordString) {
+           return next(
+             new ErrorClass(
+               "Old and new passwords cannot be the same",
+               StatusCodes.FORBIDDEN
+             )
+           );
+         }
+
+
+        const isMatch = compare({
+          plaintext: oldPasswordString,
+          hashValue: user.password,
+        });
         if (!isMatch) {
           return next(new Error('Invalid old password',StatusCodes.BAD_REQUEST))
         }
-        let hashPassword = hash({plaintext:newPassword});
+        let hashPassword = hash({ plaintext: newPasswordString });
         await userModel.updateOne({_id:user._id},{password:hashPassword})
         return res.status(StatusCodes.OK).json({ message: 'Password updated' });
   }
