@@ -14,10 +14,9 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://social-qftn.onrender.com",
-  "https://social-app-delta-two.vercel.app",
+  "https://social-app-pearl-omega.vercel.app",
   "https://social-app-git-main-hagerali42.vercel.app",
-  "https://social-aymnl64li-hagerali42.vercel.app",
+  "https://social-a0085hhgq-hagerali42.vercel.app",
 ];
 
 app.use(
