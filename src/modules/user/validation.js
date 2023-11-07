@@ -31,7 +31,7 @@ export const change_password = {
     .required()
     .keys({
       oldPassword: generalFields.password.required(),
-      newPassword: generalFields.password.$required(),
+      newPassword: generalFields.password.required(),
       cPassword: joi.string().valid(joi.ref("newPassword")),
     }),
   params: joi.object().required().keys({}),
