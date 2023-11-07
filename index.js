@@ -14,10 +14,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://social-app-pearl-omega.vercel.app",
-  "https://social-app-git-main-hagerali42.vercel.app",
-  "https://social-a0085hhgq-hagerali42.vercel.app",
-  "https://celadon-hamster-9f9108.netlify.app"
+  "https://vocal-seahorse-a841c0.netlify.app",
 ];
 
 app.use(
