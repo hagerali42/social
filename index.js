@@ -14,21 +14,32 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://localhost:3000",
-  "http://localhost:3001",
-  "https://localhost:3001",
   "https://social-qftn.onrender.com",
-  "*"
+  "https://social-app-delta-two.vercel.app",
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) {
+        // Requests with no origin (e.g., same-origin requests) are allowed
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const message =
+          "The CORS policy for this site does not allow access from the specified origin.";
+        return callback(new Error(message), false);
+      }
+
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify the methods you want to allow
     credentials: true,
     optionsSuccessStatus: 204, // Handle preflight requests
   })
 );
+
 // setup port and the baseUrl
 app.get("/", (req, res) => {
   res.json({ message: "welcome " });

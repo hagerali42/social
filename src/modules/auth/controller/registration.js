@@ -172,7 +172,9 @@ export const confirmEmail = async (req, res, next) => {
   const user = await userModel.updateOne({email}, { confirmEmail: true });
 
   if (user.matchedCount) {
-    return res.status(200).redirect(`${process.env.FE_URL}/#/login`);
+    return res
+      .status(200)
+      .redirect("https://social-app-delta-two.vercel.app/#/");
   } else {
     return res.status(400).render(`confirmEmail`, { message: "NOT registered Account" });
     // return res.statuse(400).redirect(`${process.env.FE_URL}/#/NotFound`)
@@ -190,7 +192,9 @@ export const newconfirmEmail = async (req, res, next) => {
     return next(new ErrorClass(`Not Register accouunt`, StatusCodes.BAD_REQUEST)); //res.redirect("URL of SignUp Page")
   }
   if (user.confirmEmail) {
-    return res.status(200).redirect(`${process.env.FE_URL}/#/login`);
+    return res
+      .status(200)
+      .redirect("https://social-app-delta-two.vercel.app/#/");
     // return next(new Error(`'your Email confirmedd  please login in!!!'`)); //res.redirect("URL of Login Page")
   }
 
