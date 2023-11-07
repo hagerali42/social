@@ -200,7 +200,7 @@ export const profilecover= async (req, res, next) => {
 export const changePassword =async(req,res,next) => {
       const user = req.user;   //FROM auth middleware 
         const { oldPassword, newPassword } = req.body;
-        if(oldPassword==newPassword.toString()){
+        if(oldPassword===newPassword.toString()){
           return next(new ErrorClass("Old and New passwords are same", StatusCodes.FORBIDDEN));
         }
         const isMatch =compare({plaintext:oldPassword,hashValue:user.password})
@@ -210,7 +210,7 @@ export const changePassword =async(req,res,next) => {
         let hashPassword = hash({plaintext:newPassword});
         await userModel.updateOne({_id:user._id},{password:hashPassword})
         return res.status(StatusCodes.OK).json({ message: 'Password updated' });
-    }
+  }
 
 // - SoftDelete profile ( by account owner only )
 export const deleteSoft =async(req, res, next) => {
