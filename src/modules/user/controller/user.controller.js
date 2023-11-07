@@ -200,6 +200,9 @@ export const profilecover= async (req, res, next) => {
 export const changePassword =async(req,res,next) => {
   const user = req.user; //FROM auth middleware
   const { oldPassword, newPassword } = req.body;
+  console.log("O", oldPassword);
+  console.log("N", newPassword);
+
   if (oldPassword.toString() === newPassword.toString()) {
     return next(
       new ErrorClass(
@@ -207,8 +210,9 @@ export const changePassword =async(req,res,next) => {
         StatusCodes.FORBIDDEN
       )
     );
+    
   }
-const match = compare({ plaintext: oldPassword, hashValue: user.password });
+  const match = compare({ plaintext: oldPassword, hashValue: user.password });
 if (!match) {
   return next(
     new ErrorClass("Invalid old password", StatusCodes.NOT_ACCEPTABLE)

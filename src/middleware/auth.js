@@ -20,7 +20,6 @@ export const auth = async (req, res, next) => {
         }
         const authUser = await userModel
           .findById(decoded.id)
-          .select("-password");
         if (!authUser) {
             return res.json({ message: "Not register account" })
         }
