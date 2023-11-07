@@ -17,6 +17,7 @@ const allowedOrigins = [
   "https://social-app-pearl-omega.vercel.app",
   "https://social-app-git-main-hagerali42.vercel.app",
   "https://social-a0085hhgq-hagerali42.vercel.app",
+  "https://celadon-hamster-9f9108.netlify.app"
 ];
 
 app.use(
