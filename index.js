@@ -16,6 +16,8 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://social-qftn.onrender.com",
   "https://social-app-delta-two.vercel.app",
+  "https://social-app-git-main-hagerali42.vercel.app",
+  "https://social-aymnl64li-hagerali42.vercel.app",
 ];
 
 app.use(
