@@ -157,19 +157,23 @@ export const updateprofile =async(req, res, next) => {
 // - add profile picture( the new picture must override the old one in the host also )
 export const addProfilePicture=async(req, res, next) => {
   const user = req.user; //from middleware
-  const uploadeImage = await cloudinary.uploader.upload(req.file.path,{folder:'social/user/profile'});
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    { folder: "social/user/profile" }
+  );
  if(user.image){
   await cloudinary.uploader.destroy(user.image.public_id);
  }
   //2-save file path in database
   await userModel.updateOne(
     { _id: req.user._id },
-    { "image.secure_url": uploadeImage.secure_url },
+    { image: { secure_url, public_id } },
     { new: true }
   );
-    getIo().emit("imgProfile", uploadeImage);
 
-  return res.status(StatusCodes.OK).json({ message: "Done", uploadeImage });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Done", uploadeImage: { secure_url, public_id } });
 }
 
 // - add cover pictures ( keep the pervious ones )
@@ -193,7 +197,7 @@ export const profilecover= async (req, res, next) => {
   );
   return res
     .status(StatusCodes.OK)
-    .json({ message: "Done", coverImage: { secure_url, public_id } });
+    .json({ message: "Done", coverImage: { secure_url, public_id }});
 }
  
 // - update password ( old password must be different from the new password )
