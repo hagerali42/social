@@ -39,6 +39,7 @@ export const accessChat = async (req, res, next) => {
       const FullChat = await chatModel
         .findOne({_id: createdChat._id,})
         .populate("users", "-password");
+      getIo().emit("newChat", FullChat);
       return res.status(200).json(FullChat);
     } catch (error) {
       return next(new ErrorClass(`${error.message}`, 400));
@@ -59,6 +60,7 @@ export const fetchChats = async (req, res, next) => {
           path: "latestMessage.sender",
           select: "userName image email",
         });
+       getIo().emit("fetch", results);
         return res.status(200).send(results);
       });
   } catch (error) {
@@ -91,7 +93,9 @@ export const createGroupChat = async (req, res, next) => {
       const fullGroupChat = await chatModel  
         .findOne({ _id: groupChat._id })
         .populate("users", "-password")
-        .populate("groupAdmin", "-password");
+      .populate("groupAdmin", "-password");
+          getIo().emit("newChatgroup", fullGroupChat);
+
       return res.status(200).json({message:"Done",fullGroupChat});
   } catch (error) {
     return next(new ErrorClass(`${error.message}`, 400));
@@ -117,6 +121,7 @@ export const renameGroup =async (req, res,next) => {
   if (!updatedChat) {
       return next(new ErrorClass("Chat Not Found", 404));
   } else {
+      getIo().emit("updatedChat", updatedChat);
     return res.status(200).json({message:"Done",updatedChat});
   }
 };
@@ -146,6 +151,7 @@ export const removeFromGroup = async (req, res,next) => {
     return next(new ErrorClass("Chat Not Found", 404));
 
   } else {
+    getIo().emit("removedgroup", removed);
    return res.json({message:"Done",removed});
   }
 }
