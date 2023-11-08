@@ -80,6 +80,15 @@ export const updatedPost = async (req, res, next) => {
   const postId = req.params.postId;
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
+  const postUth = await postsModel.findOne({createdBy: userId });
+  if (!postUth) {
+    return next(
+      new ErrorClass(
+        "You are not Authourized to make this",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
@@ -179,6 +188,15 @@ export const deletedPost = async (req, res, next) => {
   const postId = req.params.postId;
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
+  const postUth = await postsModel.findOne({createdBy: userId });
+  if (!postUth) {
+    return next(
+      new ErrorClass(
+        "You are not Authourized to delete post",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
