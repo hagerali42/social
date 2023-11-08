@@ -14,8 +14,7 @@ export const generalFields = {
       minDomainSegments: 2,
       maxDomainSegments: 4,
       tlds: { allow: ["com", "net"] },
-    })
-    .required(),
+    }),
   password: joi
     .string()
     .trim()
