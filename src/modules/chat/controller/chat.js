@@ -49,7 +49,7 @@ export const accessChat = async (req, res, next) => {
 //get all of chats of this user
 export const fetchChats = async (req, res, next) => {
   try {
-    const results = await chatModel
+    let results = await chatModel
       .find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
