@@ -9,8 +9,9 @@ export const accessChat = async (req, res, next) => {
     return next(new ErrorClass("In-vaild user", 404));
   }
   var isChat = await chatModel
+  // this chat is one to one
     .find({
-      isGroupChat: false, // this chat is one to one
+      isGroupChat: false, 
       $and: [
         //to-check user and another user founded
         { users: { $elemMatch: { $eq: req.user._id } } }, //sender
@@ -116,13 +117,7 @@ export const createGroupChat = async (req, res, next) => {
 export const renameGroup =async (req, res,next) => {
   const { chatId, chatName } = req.body;
   const updatedChat = await chatModel.findByIdAndUpdate(
-    chatId,
-    {
-      chatName: chatName,
-    },
-    {
-      new: true,
-    }
+    chatId,{chatName: chatName},{new: true,}
   )
     .populate("users", "-password")
     .populate("groupAdmin", "-password");
