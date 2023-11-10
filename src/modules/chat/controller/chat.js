@@ -50,25 +50,24 @@ export const accessChat = async (req, res, next) => {
 //get all of chats of this user
 export const fetchChats = async (req, res, next) => {
   try {
-    let results = await chatModel
-      .find({ users: { $elemMatch: { $eq: req.user._id } } })
-      .populate("users", "-password")
-      .populate("groupAdmin", "-password")
-      .populate("latestMessage")
-      .sort({ updatedAt: -1 });
-
-    results = await userModel.populate(results, {
-      path: "latestMessage.sender",
-      select: "userName image email",
-    });
-    console.log("User ID:", req.user._id);
-    console.log("Results after find:", results);
-
-    getIo().emit("fetch", results);
-    return res.status(200).send(results);
+       Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+         .populate("users", "-password")
+         .populate("groupAdmin", "-password")
+         .populate("latestMessage")
+         .sort({ updatedAt: -1 })
+         .then(async (results) => {
+           results = await User.populate(results, {
+             path: "latestMessage.sender",
+             select: "name pic email",
+           });
+          getIo().emit("fetch", results);
+           res.status(200).send(results);
+         });
   } catch (error) {
     return next(new ErrorClass(`${error.message}`, 400));
   }
+      // getIo().emit("fetch", results);
+
 };
 //create group chat 
 export const createGroupChat = async (req, res, next) => {
