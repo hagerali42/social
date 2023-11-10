@@ -190,13 +190,18 @@ export const clearimageIndPost = async (req, res, next) => {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
 
-  post.images.filter(async (image, i) => {
+  for (const [i, image] of post.images.entries()) {
     if (publiclId == image.public_id) {
-      cloudinary.uploader.destroy(publiclId);
+      // Delete the image from cloudinary
+      await cloudinary.uploader.destroy(publiclId);
+
+      // Remove the image from the images array
       post.images.splice(i, 1);
+
+      // Save the changes to the post
       await post.save();
     }
-  });
+  }
   const updateData = await post.save();
   const postUpdated = await postsModel
     .findById(updateData._id)
@@ -250,13 +255,13 @@ export const clearVedioIndPost = async (req, res, next) => {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
   
-  for (const [i, image] of post.images.entries()) {
-    if (publiclId == image.public_id) {
+  for (const [i, video] of post.videos.entries()) {
+    if (publiclId == video.public_id) {
       // Delete the image from cloudinary
       await cloudinary.uploader.destroy(publiclId);
 
       // Remove the image from the images array
-      post.images.splice(i, 1);
+      post.videos.splice(i, 1);
 
       // Save the changes to the post
       await post.save();
