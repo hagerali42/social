@@ -8,9 +8,7 @@ export const accessChat = async (req, res, next) => {
   if (!userId) {
     return next(new ErrorClass("In-vaild user", 404));
   }
-  var isChat = await chatModel
-  // this chat is one to one
-    .find({
+  var isChat = await chatModel.find({
       isGroupChat: false, 
       $and: [
         //to-check user and another user founded
@@ -58,7 +56,7 @@ export const fetchChats = async (req, res, next) => {
          .then(async (results) => {
            results = await User.populate(results, {
              path: "latestMessage.sender",
-             select: "name pic email",
+             select: "userName image email",
            });
            getIo().emit("fetch", results);
            res.status(200).send(results);

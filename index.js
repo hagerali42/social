@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://sensational-cupcake-842ea3.netlify.app",
+  "https://vocal-seahorse-a841c0.netlify.app",
 ];
 
 app.use(
@@ -95,7 +95,7 @@ socket.on("stop typing", (room) => {
   });
 
  socket.off("setup", () => {
-  //  console.log("USER DISCONNECTED");
+   console.log("USER DISCONNECTED");
    socket.leave(userData._id);
  });
 });
