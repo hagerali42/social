@@ -150,7 +150,9 @@ export const updatedPost = async (req, res, next) => {
     req.body.videos = videoslist;
   }
 
-  const updateData = { ...req.body };
+  const updateData = req.body;
+
+  // Rest of the code remains unchanged
   post.set(updateData);
   const updatedPost = await post.save();
   // const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
