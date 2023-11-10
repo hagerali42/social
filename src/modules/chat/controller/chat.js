@@ -61,6 +61,8 @@ export const fetchChats = async (req, res, next) => {
       path: "latestMessage.sender",
       select: "userName image email",
     });
+    console.log("User ID:", req.user._id);
+    console.log("Results after find:", results);
 
     getIo().emit("fetch", results);
     return res.status(200).send(results);
