@@ -29,6 +29,19 @@ router.get("/postsProfile",
   auth,
   validation(Val.getPost),
   asyncHandler(postController.getAllPostsFRomUser));
+
+router.delete(
+  "/clearImg",
+  auth,
+  validation(Val.clearimageIndPost),
+  asyncHandler(postController.clearimageIndPost)
+);
+router.delete(
+  "/clearVideo",
+  auth,
+  validation(Val.clearimageIndPost),
+  asyncHandler(postController.clearVedioIndPost)
+);
   
 router.route("/:postId")
 //updatePost

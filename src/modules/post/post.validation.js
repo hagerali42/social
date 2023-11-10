@@ -77,3 +77,11 @@ export const created={
     }),
     query: joi.object().required().keys({})
 }
+export const clearimageIndPost = {
+  body: joi.object().required().keys({
+    postId: generalFields.id,
+    publiclId: joi.string(),
+  }),
+  params: joi.object().required().keys({}),
+  query: joi.object().required().keys({}),
+};

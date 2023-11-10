@@ -78,6 +78,9 @@ export const AddPost = async (req, res, next) => {
 export const updatedPost = async (req, res, next) => {
   const userId = req.user._id;
   const postId = req.params.postId;
+ 
+
+
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
   const postUth = await postsModel.findOne({createdBy: userId });
@@ -93,16 +96,8 @@ export const updatedPost = async (req, res, next) => {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
 
-  if (req.files.images == null || req.files.images == undefined) {
-    // delete old  images
-    for (let i = 0; i < post.images.length; i++) {
-      const public_id = post.images[i].public_id;
-      cloudinary.uploader.destroy(public_id);
-    }
-    req.body.images = [];
-  }
   //  if post have images and will update
-  if (req.files.images?.length >0) {
+  if (req.files.images && req.files.images.length > 0) {
     const imagelist = [];
     for (let i = 0; i < req.files.images.length; i++) {
       let { secure_url, public_id } = await cloudinary.uploader.upload(
@@ -117,22 +112,10 @@ export const updatedPost = async (req, res, next) => {
 
       imagelist.push({ secure_url, public_id });
     }
-    
-
-    req.body.images = imagelist;
-  }
-
-  //  if post have videos and will update
-  if (req.files.videos == null || req.files.videos == undefined) {
-    //delete old  videos
-    for (let i = 0; i < post.videos.length; i++) {
-      const public_id = post.videos[i].public_id;
-      cloudinary.uploader.destroy(public_id);
-    }
-    req.body.videos = [];
+    req.files.images = imagelist;
   }
   
-  if (req.files.videos?.length>0) {
+  if (req.files.videos && req.files.videos.length > 0) {
     const videoslist = [];
     for (let i = 0; i < req.files.videos.length; i++) {
       let { secure_url, public_id } = await cloudinary.uploader.upload(
@@ -150,7 +133,7 @@ export const updatedPost = async (req, res, next) => {
     req.body.videos = videoslist;
   }
 
-  const updateData = req.body;
+  const updateData = {...req.body};
 
   // Rest of the code remains unchanged
   post.set(updateData);
@@ -185,6 +168,125 @@ export const updatedPost = async (req, res, next) => {
   return res.status(StatusCodes.OK)
     .json({ message: "Post updated successfully", postUpdated });
 };
+// - Update post ( by post owner only)
+export const clearimageIndPost = async (req, res, next) => {
+  const userId = req.user._id;
+  const postId = req.body;
+  const publiclId = req.body;
+
+  // Find the post by id and check if the createdBy  user's id
+  const post = await postsModel.findOne({ _id: postId, createdBy: userId });
+  const postUth = await postsModel.findOne({ createdBy: userId });
+
+  if (!postUth) {
+    return next(
+      new ErrorClass(
+        "You are not Authourized to make this",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
+  if (!post) {
+    return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
+  }
+
+  post.images.filter((image, i) => {
+    if (publiclId == image.public_id) {
+       cloudinary.uploader.destroy(publiclId);
+      post.images.splice(i, 1);
+      }
+  });
+  const updateData = await post.save();
+  const postUpdated = await postsModel
+    .findById(updateData._id)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
+  getIo().emit("updatePost", postUpdated);
+  return res.status(StatusCodes.OK)
+    .json({ message: "Post updated successfully", postUpdated });
+};
+// - Update post ( by post owner only)
+export const clearVedioIndPost = async (req, res, next) => {
+  const userId = req.user._id;
+  const postId = req.body;
+  const publiclId = req.body;
+
+  // Find the post by id and check if the createdBy  user's id
+  const post = await postsModel.findOne({ _id: postId, createdBy: userId });
+  const postUth = await postsModel.findOne({ createdBy: userId });
+
+  if (!postUth) {
+    return next(
+      new ErrorClass(
+        "You are not Authourized to make this",
+        StatusCodes.NOT_FOUND
+      )
+    );
+  }
+  if (!post) {
+    return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
+  }
+  
+  post.videos.filter((video, i) => {
+    if (publiclId == video.public_id) {
+      cloudinary.uploader.destroy(publiclId);
+      post.videos.splice(i, 1);
+    }
+  });
+  const updateData = await post.save();
+  const postUpdated = await postsModel
+    .findById(updateData._id)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
+  getIo().emit("updatePost", postUpdated);
+  return res.status(StatusCodes.OK)
+    .json({ message: "Post updated successfully", postUpdated });
+};
+
 // - Delete post ( by post owner only )(also delete post's comments )(delete pictures from cloudinary also)
 export const deletedPost = async (req, res, next) => {
   const userId = req.user._id;
