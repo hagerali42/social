@@ -50,7 +50,7 @@ export const accessChat = async (req, res, next) => {
 //get all of chats of this user
 export const fetchChats = async (req, res, next) => {
   try {
-       Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+       chatModel.find({ users: { $elemMatch: { $eq: req.user._id } } })
          .populate("users", "-password")
          .populate("groupAdmin", "-password")
          .populate("latestMessage")
@@ -60,7 +60,7 @@ export const fetchChats = async (req, res, next) => {
              path: "latestMessage.sender",
              select: "name pic email",
            });
-          getIo().emit("fetch", results);
+           getIo().emit("fetch", results);
            res.status(200).send(results);
          });
   } catch (error) {
