@@ -66,8 +66,6 @@ export const fetchChats = async (req, res, next) => {
   } catch (error) {
     return next(new ErrorClass(`${error.message}`, 400));
   }
-      // getIo().emit("fetch", results);
-
 };
 //create group chat 
 export const createGroupChat = async (req, res, next) => {

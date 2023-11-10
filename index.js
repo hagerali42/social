@@ -15,6 +15,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://sensational-cupcake-842ea3.netlify.app",
+  "https://sensational-cupcake-842ea3.netlify.app/",
 ];
 
 app.use(
