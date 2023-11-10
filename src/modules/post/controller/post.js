@@ -190,11 +190,12 @@ export const clearimageIndPost = async (req, res, next) => {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
 
-  post.images.filter((image, i) => {
+  post.images.filter(async (image, i) => {
     if (publiclId == image.public_id) {
-       cloudinary.uploader.destroy(publiclId);
+      cloudinary.uploader.destroy(publiclId);
       post.images.splice(i, 1);
-      }
+      await post.save();
+    }
   });
   const updateData = await post.save();
   const postUpdated = await postsModel
