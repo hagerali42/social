@@ -93,14 +93,14 @@ export const updatedPost = async (req, res, next) => {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
 
-  // if (req.files.images == null || req.files.images == undefined) {
-  //   //delete old  images
-  //   // for (let i = 0; i < post.images.length; i++) {
-  //   //   const public_id = post.images[i].public_id;
-  //   //   cloudinary.uploader.destroy(public_id);
-  //   // }
-  //   // req.body.images = [];
-  // }
+  if (req.files.images == null || req.files.images == undefined) {
+    // delete old  images
+    for (let i = 0; i < post.images.length; i++) {
+      const public_id = post.images[i].public_id;
+      cloudinary.uploader.destroy(public_id);
+    }
+    req.body.images = [];
+  }
   //  if post have images and will update
   if (req.files.images?.length) {
     const imagelist = [];
@@ -123,14 +123,14 @@ export const updatedPost = async (req, res, next) => {
   }
 
   //  if post have videos and will update
-  // if (req.files.videos == null || req.files.videos == undefined) {
-  //   //delete old  videos
-  //   for (let i = 0; i < post.videos.length; i++) {
-  //     const public_id = post.videos[i].public_id;
-  //     cloudinary.uploader.destroy(public_id);
-  //   }
-  //   req.body.videos = [];
-  // }
+  if (req.files.videos == null || req.files.videos == undefined) {
+    //delete old  videos
+    for (let i = 0; i < post.videos.length; i++) {
+      const public_id = post.videos[i].public_id;
+      cloudinary.uploader.destroy(public_id);
+    }
+    req.body.videos = [];
+  }
   
   if (req.files.videos?.length) {
     const videoslist = [];
