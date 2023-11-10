@@ -102,7 +102,7 @@ export const updatedPost = async (req, res, next) => {
     req.body.images = [];
   }
   //  if post have images and will update
-  if (req.files.images?.length) {
+  if (req.files.images?.length >0) {
     const imagelist = [];
     for (let i = 0; i < req.files.images.length; i++) {
       let { secure_url, public_id } = await cloudinary.uploader.upload(
@@ -132,7 +132,7 @@ export const updatedPost = async (req, res, next) => {
     req.body.videos = [];
   }
   
-  if (req.files.videos?.length) {
+  if (req.files.videos?.length>0) {
     const videoslist = [];
     for (let i = 0; i < req.files.videos.length; i++) {
       let { secure_url, public_id } = await cloudinary.uploader.upload(
