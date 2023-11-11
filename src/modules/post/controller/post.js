@@ -105,10 +105,10 @@ export const updatedPost = async (req, res, next) => {
         { folder: "social/user/post" }
       );
       //delete old  images
-      for (let i = 0; i < post.images.length; i++) {
-        const public_id = post.images[i].public_id;
-        cloudinary.uploader.destroy(public_id);
-      }
+      // for (let i = 0; i < post.images.length; i++) {
+      //   const public_id = post.images[i].public_id;
+      //   cloudinary.uploader.destroy(public_id);
+      // }
 
       imagelist.push({ secure_url, public_id });
     }
@@ -123,10 +123,10 @@ export const updatedPost = async (req, res, next) => {
         { resource_type: "video", folder: "social/user/post/videos" }
       );
       //delete old  videos
-      for (let i = 0; i < post.videos.length; i++) {
-        const public_id = post.videos[i].public_id;
-        cloudinary.uploader.destroy(public_id);
-      }
+      // for (let i = 0; i < post.videos.length; i++) {
+      //   const public_id = post.videos[i].public_id;
+      //   cloudinary.uploader.destroy(public_id);
+      // }
       videoslist.push({ secure_url, public_id });
     }
 
