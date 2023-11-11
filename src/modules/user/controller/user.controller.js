@@ -149,7 +149,7 @@ export const updateprofile =async(req, res, next) => {
     req.body.phone = req.body.phone;
     }
 
-  const userProfile=await userModel.findByIdAndUpdate({_id:req.user._id},req.body);
+  const userProfile=await userModel.findByIdAndUpdate({_id:req.user._id},req.body,{new:true});
   return res.status(StatusCodes.OK).json({ message: 'Done' ,userProfile});
   
   }
