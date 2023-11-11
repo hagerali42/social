@@ -98,8 +98,11 @@ export const updatedPost = async (req, res, next) => {
 
   //  if post have images and will update
   if (req.files.images && req.files.images.length > 0) {
+        console.log(req.files.images);
+
     const imagelist = [];
     for (let i = 0; i < req.files.images.length; i++) {
+       
       let { secure_url, public_id } = await cloudinary.uploader.upload(
         req.files.images[i].path,
         { folder: "social/user/post" }
@@ -116,8 +119,10 @@ export const updatedPost = async (req, res, next) => {
   }
   
   if (req.files.videos && req.files.videos.length > 0) {
+    console.log(req.files.videos);
     const videoslist = [];
     for (let i = 0; i < req.files.videos.length; i++) {
+
       let { secure_url, public_id } = await cloudinary.uploader.upload(
         req.files.videos[i].path,
         { resource_type: "video", folder: "social/user/post/videos" }
@@ -138,6 +143,7 @@ export const updatedPost = async (req, res, next) => {
   // Rest of the code remains unchanged
   post.set(updateData);
   const updatedPost = await post.save();
+  console.log("updatedPost", updatedPost);
   // const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
    const postUpdated = await postsModel.findById(updatedPost._id)
      .populate("createdBy likes")
