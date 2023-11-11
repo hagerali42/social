@@ -191,6 +191,7 @@ export const clearimageIndPost = async (req, res, next) => {
   }
 
   for (const [i, image] of post.images.entries()) {
+    console.log("Comparing:", publiclId, image.public_id);
     if (publiclId == image.public_id) {
       // Delete the image from cloudinary
       await cloudinary.uploader.destroy(publiclId);
@@ -202,6 +203,7 @@ export const clearimageIndPost = async (req, res, next) => {
       await post.save();
     }
   }
+
   const updateData = await post.save();
   const postUpdated = await postsModel
     .findById(updateData._id)
@@ -261,7 +263,7 @@ export const clearVedioIndPost = async (req, res, next) => {
       await cloudinary.uploader.destroy(publiclId);
 
       // Remove the image from the images array
-      post.videos.splice(i, 1);
+      post.images.splice(i, 1);
 
       // Save the changes to the post
       await post.save();
