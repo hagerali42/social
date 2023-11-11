@@ -78,9 +78,6 @@ export const AddPost = async (req, res, next) => {
 export const updatedPost = async (req, res, next) => {
   const userId = req.user._id;
   const postId = req.params.postId;
- 
-
-
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
   const postUth = await postsModel.findOne({createdBy: userId });
@@ -95,47 +92,32 @@ export const updatedPost = async (req, res, next) => {
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
-
   //  if post have images and will update
   if (req.files.images && req.files.images.length > 0) {
-        console.log(req.files.images);
-
     const imagelist = [];
     for (let i = 0; i < req.files.images.length; i++) {
-       
+          console.log("imagelist", req.files.images[i]);
       let { secure_url, public_id } = await cloudinary.uploader.upload(
         req.files.images[i].path,
         { folder: "social/user/post" }
       );
-      //delete old  images
-      // for (let i = 0; i < post.images.length; i++) {
-      //   const public_id = post.images[i].public_id;
-      //   cloudinary.uploader.destroy(public_id);
-      // }
 
       imagelist.push({ secure_url, public_id });
     }
-    req.files.images = imagelist;
+     post.images = imagelist;
   }
   
   if (req.files.videos && req.files.videos.length > 0) {
-    console.log(req.files.videos);
     const videoslist = [];
     for (let i = 0; i < req.files.videos.length; i++) {
-
       let { secure_url, public_id } = await cloudinary.uploader.upload(
         req.files.videos[i].path,
         { resource_type: "video", folder: "social/user/post/videos" }
       );
-      //delete old  videos
-      // for (let i = 0; i < post.videos.length; i++) {
-      //   const public_id = post.videos[i].public_id;
-      //   cloudinary.uploader.destroy(public_id);
-      // }
       videoslist.push({ secure_url, public_id });
     }
 
-    req.body.videos = videoslist;
+     post.videos = videoslist;
   }
 
   const updateData = {...req.body};
@@ -143,7 +125,6 @@ export const updatedPost = async (req, res, next) => {
   // Rest of the code remains unchanged
   post.set(updateData);
   const updatedPost = await post.save();
-  console.log("updatedPost", updatedPost);
   // const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
    const postUpdated = await postsModel.findById(updatedPost._id)
      .populate("createdBy likes")
@@ -195,20 +176,10 @@ export const clearimageIndPost = async (req, res, next) => {
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
-
   for (const [i, image] of post.images.entries()) {
-    console.log("Comparing:", publiclId, image.public_id);
     if (publiclId == image.public_id) {
-      console.log("matched");
-      // Delete the image from cloudinary
       await cloudinary.uploader.destroy(publiclId);
-
-      // Remove the image from the images array
-      console.log("post.imagesbefore", post.images);
-
       post.images.splice(i, 1);
-      console.log("post.after", post.images);
-
       // Save the changes to the post
       await post.save();
     }
@@ -266,15 +237,12 @@ export const clearVedioIndPost = async (req, res, next) => {
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
-  
   for (const [i, video] of post.videos.entries()) {
     if (publiclId == video.public_id) {
       // Delete the image from cloudinary
       await cloudinary.uploader.destroy(publiclId);
-
       // Remove the image from the images array
-      post.images.splice(i, 1);
-
+      post.videos.splice(i, 1);
       // Save the changes to the post
       await post.save();
     }
