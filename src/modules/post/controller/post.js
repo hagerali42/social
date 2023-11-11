@@ -80,7 +80,7 @@ export const updatedPost = async (req, res, next) => {
   const postId = req.params.postId;
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
-  const postUth = await postsModel.findOne({createdBy: userId });
+  const postUth = await postsModel.findOne({ createdBy: userId });
   if (!postUth) {
     return next(
       new ErrorClass(
@@ -90,69 +90,72 @@ export const updatedPost = async (req, res, next) => {
     );
   }
   if (!post) {
-    return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
+    return next(new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
-  //  if post have images and will update
+  // Update text data
+  post.set(req.body);
+
+  // Update images
   if (req.files.images && req.files.images.length > 0) {
-    const imagelist = [];
-    for (let i = 0; i < req.files.images.length; i++) {
-          console.log("imagelist", req.files.images[i]);
-      let { secure_url, public_id } = await cloudinary.uploader.upload(
-        req.files.images[i].path,
-        { folder: "social/user/post" }
-      );
+    const imagelist = await Promise.all(
+      req.files.images.map(async (image) => {
+        const { secure_url, public_id } = await cloudinary.uploader.upload(
+          image.path,
+          { folder: "social/user/post" }
+        );
+        return { secure_url, public_id };
+      })
+    );
 
-      imagelist.push({ secure_url, public_id });
-    }
-     post.images = imagelist;
+    // Append new images to the existing ones
+    post.images = post.images.concat(imagelist);
   }
-  
+
   if (req.files.videos && req.files.videos.length > 0) {
-    const videoslist = [];
-    for (let i = 0; i < req.files.videos.length; i++) {
-      let { secure_url, public_id } = await cloudinary.uploader.upload(
-        req.files.videos[i].path,
-        { resource_type: "video", folder: "social/user/post/videos" }
-      );
-      videoslist.push({ secure_url, public_id });
-    }
+    const videoslist = await Promise.all(
+      req.files.videos.map(async (video) => {
+        const { secure_url, public_id } = await cloudinary.uploader.upload(
+          video.path,
+          { resource_type: "video", folder: "social/user/post/videos" }
+        );
+        return { secure_url, public_id };
+      })
+    );
 
-     post.videos = videoslist;
+    post.videos = post.videos.concat(videoslist);
   }
 
-  const updateData = {...req.body};
-
-  // Rest of the code remains unchanged
-  post.set(updateData);
   const updatedPost = await post.save();
   // const updatedPost = await postsModel.updateOne({ _id: postId }, req.body, {new: true,})
-   const postUpdated = await postsModel.findById(updatedPost._id)
-     .populate("createdBy likes")
-     .populate({
-       path: "comments",
-       populate: [
-         {
-           path: "createdBy likes",
-           select: "userName image email",
-         },
-         {
-           path: "replies",
-           populate: {
-             path: "createdBy likes",
-             select: "userName image email",
-           },
-         },
-       ],
-     })
-     .populate({
-       path: "replaycomments",
-       populate: {
-         path: "createdBy likes",
-         select: "userName image email",
-       },
-     });
+  const postUpdated = await postsModel
+    .findById(updatedPost._id)
+    .populate("createdBy likes")
+    .populate({
+      path: "comments",
+      populate: [
+        {
+          path: "createdBy likes",
+          select: "userName image email",
+        },
+        {
+          path: "replies",
+          populate: {
+            path: "createdBy likes",
+            select: "userName image email",
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "replaycomments",
+      populate: {
+        path: "createdBy likes",
+        select: "userName image email",
+      },
+    });
   getIo().emit("updatePost", postUpdated);
-  return res.status(StatusCodes.OK)
+  return res
+    .status(StatusCodes.OK)
     .json({ message: "Post updated successfully", postUpdated });
 };
 // - Update post ( by post owner only)
@@ -176,6 +179,7 @@ export const clearimageIndPost = async (req, res, next) => {
   if (!post) {
     return next( new ErrorClass("Post not found", StatusCodes.NOT_FOUND));
   }
+
   for (const [i, image] of post.images.entries()) {
     if (publiclId == image.public_id) {
       await cloudinary.uploader.destroy(publiclId);
