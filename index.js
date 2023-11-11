@@ -14,8 +14,8 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://www.google.com",
-  "https://sensational-cupcake-842ea3.netlify.app",
+  // "https://www.google.com",
+  "https://musical-bunny-9bddfb.netlify.app",
 ];
 
 
