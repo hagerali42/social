@@ -31,13 +31,13 @@ router.get("/postsProfile",
   asyncHandler(postController.getAllPostsFRomUser));
 
 router.delete(
-  "/clearImg/:postId/:publiclId",
+  "/clearImg",
   auth,
   validation(Val.clearimageIndPost),
   asyncHandler(postController.clearimageIndPost)
 );
 router.delete(
-  "/clearVideo/:postId/:publiclId",
+  "/clearVideo",
   auth,
   validation(Val.clearimageIndPost),
   asyncHandler(postController.clearVedioIndPost)

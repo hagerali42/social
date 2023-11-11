@@ -171,8 +171,8 @@ export const updatedPost = async (req, res, next) => {
 // - Update post ( by post owner only)
 export const clearimageIndPost = async (req, res, next) => {
   const userId = req.user._id;
-  const {postId} = req.params;
-  const { publiclId } = req.params;
+  const {postId} = req.body;
+  const { publiclId } = req.body;
 
   // Find the post by id and check if the createdBy  user's id
   const post = await postsModel.findOne({ _id: postId, createdBy: userId });
