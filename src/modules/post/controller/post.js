@@ -193,11 +193,15 @@ export const clearimageIndPost = async (req, res, next) => {
   for (const [i, image] of post.images.entries()) {
     console.log("Comparing:", publiclId, image.public_id);
     if (publiclId == image.public_id) {
+      console.log("matched");
       // Delete the image from cloudinary
       await cloudinary.uploader.destroy(publiclId);
 
       // Remove the image from the images array
+      console.log("post.imagesbefore", post.images);
+
       post.images.splice(i, 1);
+      console.log("post.after", post.images);
 
       // Save the changes to the post
       await post.save();
