@@ -133,7 +133,7 @@ export const updateprofile =async(req, res, next) => {
     </body>
     </html>`;
   if (!await sendEmail({ to: email, subject: "Confirm email", html })) {
-    redirect("https://musical-bunny-9bddfb.netlify.app");
+    redirect("https://bejewelled-speculoos-83b998.netlify.app");
     return next(new ErrorClass("Email rejected", StatusCodes.NOT_FOUND));
   }      
      req.body.email = req.body.email
