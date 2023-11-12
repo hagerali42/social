@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://fluffy-centaur-722bc3.netlify.app",
+  "https://gorgeous-liger-a5c8b5.netlify.app",
 ];
 
 
