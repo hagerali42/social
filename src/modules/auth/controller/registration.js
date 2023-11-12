@@ -336,9 +336,9 @@ export const login= async (req, res, next) =>{
    return next(new ErrorClass("In-valid User Data", StatusCodes.NOT_ACCEPTABLE));
  }
 //  must be confirmed and not deleted
- if(!user.confirmEmail || user.isDeleted==true){
-  return next(new ErrorClass("Email Not Confirmed or deleted", StatusCodes.NOT_ACCEPTABLE));
- }
+//  if(!user.confirmEmail || user.isDeleted==true){
+//   return next(new ErrorClass("Email Not Confirmed or deleted", StatusCodes.NOT_ACCEPTABLE));
+//  }
  const match =compare({plaintext:password,hashValue:user.password})
  if (!match) {
   return next(new ErrorClass("In-valid User Data", StatusCodes.NOT_ACCEPTABLE));
