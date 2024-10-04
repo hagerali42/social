@@ -14,6 +14,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:5173",
   "https://gorgeous-liger-a5c8b5.netlify.app",
 ];
 
@@ -64,7 +65,7 @@ io.on("connection", (socket) => {
   //   // send all active users to new user
   //   io.emit("get-users", activeUsers);
   // });
-  console.log("connected socket");
+  // console.log("connected socket");
   socket.on("setup", async (userData) => {
   // await userModel.findByIdAndUpdate(userData._id, { socketId: socket.id });
     socket.join(userData._id);
@@ -75,6 +76,7 @@ io.on("connection", (socket) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
   });
+  
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
